@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Dashboard | Quiz App</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+	<script src="https://www.gstatic.com/firebasejs/7.17.2/firebase-app.js"></script>
+	<script src="https://www.gstatic.com/firebasejs/7.17.2/firebase-database.js"></script>
+	<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+
+ 
+	<script>
+		var firebaseConfig = {
+			apiKey: "AIzaSyBX9_yYquGUfFFPhay1XYWM21aVl9jM9Yk",
+			authDomain: "onestop-realdata.firebaseapp.com",
+			databaseURL: "https://onestop-realdata.firebaseio.com",
+			projectId: "onestop-realdata",
+			storageBucket: "onestop-realdata.appspot.com",
+			messagingSenderId: "425723882258",
+			appId: "1:425723882258:web:0af2b59e5e117a30b6e1cb"
+		};
+		// Initialize Firebase
+		//firebase.initializeApp(firebaseConfig);
+	</script>
+</head>
+<body>
+<div class="container">
+	<nav class="navbar navbar-expand-lg navbar-light">
+		<a class="navbar-brand" href="index.html">QuizApp</a>
+		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+			aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+			<span class="navbar-toggler-icon"></span>
+		</button>
+
+		<div class="collapse navbar-collapse" id="navbarSupportedContent">
+			<ul class="navbar-nav ml-auto">
+				<li class="nav-item dropdown">
+					<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
+						aria-haspopup="true" aria-expanded="false">
+						Ahmad
+					</a>
+					<div class="dropdown-menu" aria-labelledby="navbarDropdown">
+						<a class="dropdown-item" href="#">Logout</a>
+					</div>
+				</li>
+			</ul>
+		</div>
+	</nav>
+</div>
+
+<div class="container py-5">
+	<div class="row">
+		<div class="col">
+			<h2 class="text-center">Teacher's Dashboard</h2>
+		</div>
+	</div>
+	<div class="row pt-5">
+		<div class="col-lg-8 col-md-7 col-sm-12">
+			<div class="card">
+				<h5 class="card-header info-color white-text text-center py-4">
+					<strong>All Quizzes</strong>
+				</h5>
+				<div class="card-body p-0">
+					<table class="table "> 
+						<tbody>
+							<tr>
+								<th>ID</th>
+								<th>Name</th>
+								<th>Actions</th>
+							</tr>
+						</tbody>
+						<tbody id="quizes">
+							<tr>
+								<td>ID</td>
+								<td>Name</td>
+								<td>Actions</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+		<div class="col-lg-4 col-md-5 col-sm-12">
+			<div class="card">
+				<h5 class="card-header info-color white-text text-center py-4">
+					<strong>Add Quiz</strong>
+				</h5>
+				<div class="card-body">
+					<form style="color: #757575;" action="#!">
+						<div class="md-form">
+							<label for="text">Quiz Name</label>
+							<input type="text" id="qname" class="form-control" required />
+						</div>
+						<button class="btn btn-outline-info btn-rounded my-4" type="button" onClick="addQuiz()">Add</button>
+					</form>
+					<div class="alert alert-warning d-none" role="alert">
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+</div>
+
+
+
+<script>
+function hideAlert() {
+	setTimeout(function () {
+		$(".alert").addClass('d-none');
+	}, 5000);
+}
+function addQuiz() {
+	qName = $('#qname').val();
+	if(qName == ''){
+		$('.alert').removeClass('d-none');
+		$('.alert').html('Quiz name filed is empty! Please fill and submit again.gm');
+		hideAlert()
+	}
+
+}
+$(document).ready(function(){
+
+});
+</script>
+</body>
+</html>
