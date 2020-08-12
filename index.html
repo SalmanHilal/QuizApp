@@ -10,6 +10,7 @@
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 	<script src="https://www.gstatic.com/firebasejs/7.17.2/firebase-app.js"></script>
+	<script src="https://www.gstatic.com/firebasejs/7.17.2/firebase-auth.js"></script>
 	<script src="https://www.gstatic.com/firebasejs/7.17.2/firebase-database.js"></script>
 	<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 
@@ -24,8 +25,8 @@
 			messagingSenderId: "425723882258",
 			appId: "1:425723882258:web:0af2b59e5e117a30b6e1cb"
 		};
-		// Initialize Firebase
-		//firebase.initializeApp(firebaseConfig);
+		
+		firebase.initializeApp(firebaseConfig);
 	</script>
 </head>
 <body>
@@ -67,6 +68,10 @@
 				<div class="card-body px-lg-5">
 					<form style="color: #757575;" action="#!">
 						<div class="md-form">
+							<label for="fullName">Full Name</label>
+							<input type="fullName" id="text" class="form-control" required />
+						</div>
+						<div class="md-form">
 							<label for="email">Email</label>
 							<input type="email" id="email" class="form-control" required />
 						</div>
@@ -106,14 +111,49 @@
 
 
 <script>
-function signup() {
-	email = $('#email').val();
-	pass = $('#pass').val();
-	role = $("#role1").prop("checked") ? 'teacher' : 'student';
-
+function hideAlert() {
+	setTimeout(function () {
+		$(".alert").addClass('d-none');
+	}, 5000);
 }
-$(document).ready(function(){
+function signup() {
+	fullName = $('#fullName').val();
+	email = $('#email').val();
+	password = $('#password').val();
+	role = $("#role1").prop("checked") ? 'teacher' : 'student';
+	firebase.auth().createUserWithEmailAndPassword(email, password)
+	.then(function (user) {
+		swal("Account has been created successfully!", {
+			icon: "success",
+		});
+		// Add User to DB 
+		key = email;
+		var person = {
+			name: fullName,
+			email: email,
+			role: role
+		}
+		firebase.database().ref('person/' + role + '/' + key).set(person);
+	}).catch(function (error) {
+		$('.alert').removeClass('d-none');
+		$('.alert').html(error.message);
+		hideAlert()
+	});
+}
 
+$(document).ready(function(){
+	$(document).ready(function () {
+		firebase.auth().onAuthStateChanged(function (user) {
+			if (user) {
+				$('.isUser').removeClass('d-none');
+				$('.userEmail').html(user['email']);
+				console.log(user)
+				//window.location.replace("quizzes.html");
+			} else {
+				console.log('User not log in')
+			}
+		});
+	});
 });
 </script>
 </body>
