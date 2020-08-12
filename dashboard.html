@@ -10,42 +10,61 @@
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 	<script src="https://www.gstatic.com/firebasejs/7.17.2/firebase-app.js"></script>
-	<script src="https://www.gstatic.com/firebasejs/7.17.2/firebase-database.js"></script>
+	<script src="https://www.gstatic.com/firebasejs/7.17.2/firebase-auth.js"></script>
 	<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 
  
 	<script>
-		var firebaseConfig = {
-			apiKey: "AIzaSyBX9_yYquGUfFFPhay1XYWM21aVl9jM9Yk",
-			authDomain: "onestop-realdata.firebaseapp.com",
-			databaseURL: "https://onestop-realdata.firebaseio.com",
-			projectId: "onestop-realdata",
-			storageBucket: "onestop-realdata.appspot.com",
-			messagingSenderId: "425723882258",
-			appId: "1:425723882258:web:0af2b59e5e117a30b6e1cb"
-		};
-		// Initialize Firebase
-		//firebase.initializeApp(firebaseConfig);
+	var firebaseConfig = {
+		apiKey: "AIzaSyBX9_yYquGUfFFPhay1XYWM21aVl9jM9Yk",
+		authDomain: "onestop-realdata.firebaseapp.com",
+		databaseURL: "https://onestop-realdata.firebaseio.com",
+		projectId: "onestop-realdata",
+		storageBucket: "onestop-realdata.appspot.com",
+		messagingSenderId: "425723882258",
+		appId: "1:425723882258:web:0af2b59e5e117a30b6e1cb"
+	};
+	firebase.initializeApp(firebaseConfig);
+	firebase.auth().onAuthStateChanged(function (user) {
+		if (user) {
+			$('.isUser').removeClass('d-none');
+			$('.userEmail').html(user['email']);
+			if (user['displayName'] == 'student') {
+				window.location.replace("quizzes.html");
+			}
+		} else {
+			window.location.replace("signin.html");
+		}
+	});
+	function logout() {
+		firebase.auth().signOut().then(function () {
+			window.location.replace("signup.html");
+		}, function (error) {
+			console.log(error.code);
+			console.log(error.message);
+		});
+	}
 	</script>
 </head>
 <body>
 <div class="container">
 	<nav class="navbar navbar-expand-lg navbar-light">
 		<a class="navbar-brand" href="index.html">QuizApp</a>
-		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
-			aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+		<button class="navbar-toggler isUser d-none" type="button" data-toggle="collapse"
+			data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+			aria-label="Toggle navigation">
 			<span class="navbar-toggler-icon"></span>
 		</button>
 
 		<div class="collapse navbar-collapse" id="navbarSupportedContent">
-			<ul class="navbar-nav ml-auto">
+			<ul class="navbar-nav ml-auto isUser d-none">
 				<li class="nav-item dropdown">
-					<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
-						aria-haspopup="true" aria-expanded="false">
-						Ahmad
+					<a class="nav-link dropdown-toggle userEmail" href="#" id="navbarDropdown" role="button"
+						data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+						User
 					</a>
 					<div class="dropdown-menu" aria-labelledby="navbarDropdown">
-						<a class="dropdown-item" href="#">Logout</a>
+						<a class="dropdown-item" href="#" onClick="logout()">Logout</a>
 					</div>
 				</li>
 			</ul>
@@ -111,6 +130,7 @@
 
 
 <script>
+
 function hideAlert() {
 	setTimeout(function () {
 		$(".alert").addClass('d-none');
@@ -125,6 +145,7 @@ function addQuiz() {
 	}
 
 }
+
 $(document).ready(function(){
 
 });

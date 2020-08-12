@@ -11,22 +11,20 @@
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 	<script src="https://www.gstatic.com/firebasejs/7.17.2/firebase-app.js"></script>
 	<script src="https://www.gstatic.com/firebasejs/7.17.2/firebase-auth.js"></script>
-	<script src="https://www.gstatic.com/firebasejs/7.17.2/firebase-database.js"></script>
-	<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+	<script src="assets/sweetalert.min.js"></script>
 
  
 	<script>
-		var firebaseConfig = {
-			apiKey: "AIzaSyBX9_yYquGUfFFPhay1XYWM21aVl9jM9Yk",
-			authDomain: "onestop-realdata.firebaseapp.com",
-			databaseURL: "https://onestop-realdata.firebaseio.com",
-			projectId: "onestop-realdata",
-			storageBucket: "onestop-realdata.appspot.com",
-			messagingSenderId: "425723882258",
-			appId: "1:425723882258:web:0af2b59e5e117a30b6e1cb"
-		};
-		
-		firebase.initializeApp(firebaseConfig);
+	var firebaseConfig = {
+		apiKey: "AIzaSyBX9_yYquGUfFFPhay1XYWM21aVl9jM9Yk",
+		authDomain: "onestop-realdata.firebaseapp.com",
+		databaseURL: "https://onestop-realdata.firebaseio.com",
+		projectId: "onestop-realdata",
+		storageBucket: "onestop-realdata.appspot.com",
+		messagingSenderId: "425723882258",
+		appId: "1:425723882258:web:0af2b59e5e117a30b6e1cb"
+	};
+	firebase.initializeApp(firebaseConfig);
 	</script>
 </head>
 <body>
@@ -40,17 +38,6 @@
 		</button>
 
 		<div class="collapse navbar-collapse" id="navbarSupportedContent">
-			<ul class="navbar-nav ml-auto isUser d-none">
-				<li class="nav-item dropdown">
-					<a class="nav-link dropdown-toggle userEmail" href="#" id="navbarDropdown" role="button"
-						data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-						Ahmad
-					</a>
-					<div class="dropdown-menu" aria-labelledby="navbarDropdown">
-						<a class="dropdown-item" href="#">Logout</a>
-					</div>
-				</li>
-			</ul>
 		</div>
 	</nav>
 </div>
@@ -112,6 +99,10 @@
 
 
 <script>
+function isEmail(email) {
+	var regex = /^([a-zA-Z0-9_.+-])+\@(([a-zA-Z0-9-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+	return regex.test(email);
+}
 function hideAlert() {
 	setTimeout(function () {
 		$(".alert").addClass('d-none');
@@ -122,50 +113,70 @@ function signup() {
 	email = $('#email').val();
 	password = $('#password').val();
 	role = $("#role1").prop("checked") ? 'teacher' : 'student';
-
-
-	firebase.auth().createUserWithEmailAndPassword(email, password)
+	if(email.length === 0 || password.length === 0){
+		$('.alert').removeClass('d-none');
+		$('.alert').html('One of the above field is empty! Please check & try again.');
+		hideAlert()
+	}else if(password.length < 6){
+		$('.alert').removeClass('d-none');
+		$('.alert').html('Password length must be atleast of six characters.');
+		hideAlert()
+	}else if(!isEmail(email)){
+		$('.alert').removeClass('d-none');
+		$('.alert').html('Invalid email! Please enter valid email.');
+		hideAlert()
+	}else{
+		firebase.auth().createUserWithEmailAndPassword(email, password)
 		.then(function (result) {
-			return result.user.updateProfile({
+			swal("You have successfully signed in!", {
+				icon: "success",
+			});
+			result.user.updateProfile({
 				displayName: role
 			});
-		swal("Account has been created successfully!", {
-			icon: "success",
-		});
-		// Add User to DB 
-		// key = email.replace('.','-');
-		// key = key.replace('@', '-');
-		// var person = {
-		// 	name: fullName,
-		// 	email: email,
-		// 	role: role
-		// }
-		// firebase.database().ref('person/' + role + '/' + key).set(person);
-
-	}).catch(function (error) {
-		$('.alert').removeClass('d-none');
-		$('.alert').html(error.message);
-		hideAlert()
-	});
-}
-
-$(document).ready(function(){
-	$(document).ready(function () {
-		firebase.auth().onAuthStateChanged(function (user) {
-			if (user) {
-				$('.isUser').removeClass('d-none');
-				$('.userEmail').html(user['email']);
-				if(user['displayName'] == 'teacher'){
+			setTimeout(function () {
+				if (role == 'teacher') {
 					window.location.replace("dashboard.html");
-				}else if(user['displayName'] == 'student'){
+				} else if (role == 'student') {
 					window.location.replace("quizzes.html");
 				}
-			} else {
-				console.log('User not log in')
-			}
+			}, 3000);
+
+
+			// Add User to DB 
+			// key = email.replace('.','-');
+			// key = key.replace('@', '-');
+			// var person = {
+			// 	name: fullName,
+			// 	email: email,
+			// 	role: role
+			// }
+			// firebase.database().ref('person/' + role + '/' + key).set(person);
+
+		}).catch(function (error) {
+			$('.alert').removeClass('d-none');
+			$('.alert').html(error.message);
+			hideAlert()
 		});
+	}
+
+}
+$(document).ready(function () {
+	firebase.auth().onAuthStateChanged(function (user) {
+		if (user) {
+			console.log(user)
+			if (user['displayName'] == 'teacher') {
+				window.location.replace("dashboard.html");
+			} else if (user['displayName'] == 'student') {
+				window.location.replace("quizzes.html");
+			}
+		} else {
+			console.log('User not log in')
+		}
 	});
+
 });
+
 </script>
 </body>
 </html>

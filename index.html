@@ -15,42 +15,30 @@
 
  
 	<script>
-		var firebaseConfig = {
-			apiKey: "AIzaSyBX9_yYquGUfFFPhay1XYWM21aVl9jM9Yk",
-			authDomain: "onestop-realdata.firebaseapp.com",
-			databaseURL: "https://onestop-realdata.firebaseio.com",
-			projectId: "onestop-realdata",
-			storageBucket: "onestop-realdata.appspot.com",
-			messagingSenderId: "425723882258",
-			appId: "1:425723882258:web:0af2b59e5e117a30b6e1cb"
-		};
-		firebase.initializeApp(firebaseConfig);
+	var firebaseConfig = {
+		apiKey: "AIzaSyBX9_yYquGUfFFPhay1XYWM21aVl9jM9Yk",
+		authDomain: "onestop-realdata.firebaseapp.com",
+		databaseURL: "https://onestop-realdata.firebaseio.com",
+		projectId: "onestop-realdata",
+		storageBucket: "onestop-realdata.appspot.com",
+		messagingSenderId: "425723882258",
+		appId: "1:425723882258:web:0af2b59e5e117a30b6e1cb"
+	};
+	firebase.initializeApp(firebaseConfig);
+	firebase.auth().onAuthStateChanged(function (user) {
+		if (user) {
+			if (user['displayName'] == 'teacher') {
+				window.location.replace("dashboard.html");
+			} else if (user['displayName'] == 'student') {
+				window.location.replace("quizzes.html");
+			}
+		} else {
+			console.log('User not log in')
+		}
+	});
 	</script>
 </head>
 <body>
-<div class="container">
-	<nav class="navbar navbar-expand-lg navbar-light">
-		<a class="navbar-brand" href="index.html">QuizApp</a>
-		<button class="navbar-toggler isUser d-none" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
-			aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-			<span class="navbar-toggler-icon"></span>
-		</button>
-
-		<div class="collapse navbar-collapse" id="navbarSupportedContent">
-			<ul class="navbar-nav ml-auto isUser d-none">
-				<li class="nav-item dropdown">
-					<a class="nav-link dropdown-toggle userEmail" href="#" id="navbarDropdown" role="button"
-						data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-						Ahmad
-					</a>
-					<div class="dropdown-menu" aria-labelledby="navbarDropdown">
-						<a class="dropdown-item" href="#">Logout</a>
-					</div>
-				</li>
-			</ul>
-		</div>
-	</nav>
-</div>
 <div class="container py-5">
 	<div class="row">
 		<div class="col">
@@ -69,21 +57,8 @@
 
 
 <script>
-$(document).ready(function () {
-	$(document).ready(function () {
-		firebase.auth().onAuthStateChanged(function (user) {
-			if (user) {
-				if (user['displayName'] == 'teacher') {
-					window.location.replace("dashboard.html");
-				} else if (user['displayName'] == 'student') {
-					window.location.replace("quizzes.html");
-				}
-			} else {
-				console.log('User not log in')
-			}
-		});
-	});
-});
+
+
 </script>
 </body>
 </html>

@@ -11,7 +11,7 @@
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 	<script src="https://www.gstatic.com/firebasejs/7.17.2/firebase-app.js"></script>
 	<script src="https://www.gstatic.com/firebasejs/7.17.2/firebase-auth.js"></script>
-	<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+	<script src="assets/sweetalert.min.js"></script>
 
  
 	<script>
@@ -37,17 +37,7 @@
 		</button>
 
 		<div class="collapse navbar-collapse" id="navbarSupportedContent">
-			<ul class="navbar-nav ml-auto isUser d-none">
-				<li class="nav-item dropdown">
-					<a class="nav-link dropdown-toggle userEmail" href="#" id="navbarDropdown" role="button"
-						data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-						Ahmad
-					</a>
-					<div class="dropdown-menu" aria-labelledby="navbarDropdown">
-						<a class="dropdown-item" href="#">Logout</a>
-					</div>
-				</li>
-			</ul>
+
 		</div>
 	</nav>
 </div>
@@ -91,31 +81,51 @@
 
 
 <script>
+function isEmail(email) {
+	var regex = /^([a-zA-Z0-9_.+-])+\@(([a-zA-Z0-9-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+	return regex.test(email);
+}
 function signin() {
 	email = $('#email').val();
 	password = $('#password').val();
-	firebase.auth().signInWithEmailAndPassword(email, password).then(function (user) {
-		swal("You have successfully signed in!", {
-			icon: "success",
-		});
-	}).catch(function (error) {
+	if (email.length === 0 || password.length === 0) {
 		$('.alert').removeClass('d-none');
-		$('.alert').html(error.message);
+		$('.alert').html('One of the above field is empty! Please check & try again.');
 		hideAlert()
-	});
-
+	} else if (password.length < 6) {
+		$('.alert').removeClass('d-none');
+		$('.alert').html('Password length must be atleast of six characters.');
+		hideAlert()
+	} else if (!isEmail(email)) {
+		$('.alert').removeClass('d-none');
+		$('.alert').html('Invalid email! Please enter valid email.');
+		hideAlert()
+	} else {
+		firebase.auth().signInWithEmailAndPassword(email, password).then(function (user) {
+			swal("You have successfully signed in!", {
+				icon: "success",
+			});
+		}).catch(function (error) {
+			$('.alert').removeClass('d-none');
+			$('.alert').html(error.message);
+			hideAlert()
+		});
+	}
 }
-$(document).ready(function(){
-	firebase.auth().onAuthStateChanged(function (user) {
-		if (user) {
-			$('.isUser').removeClass('d-none');
-			$('.userEmail').html(user['email']);
+
+firebase.auth().onAuthStateChanged(function (user) {
+	if (user) {
+		console.log(user)
+		if (user['displayName'] == 'teacher') {
+			window.location.replace("dashboard.html");
+		} else if (user['displayName'] == 'student') {
 			window.location.replace("quizzes.html");
-		} else {
-			console.log('User not log in')
 		}
-	});
+	} else {
+		console.log('User not log in')
+	}
 });
+
 </script>
 </body>
 </html>
