@@ -128,7 +128,7 @@ function signup() {
 	}else{
 		firebase.auth().createUserWithEmailAndPassword(email, password)
 		.then(function (result) {
-			swal("You have successfully signed in!", {
+			swal("You have successfully signed up!", {
 				icon: "success",
 			});
 			result.user.updateProfile({

@@ -29,6 +29,7 @@
 		if (user) {
 			$('.isUser').removeClass('d-none');
 			$('.userEmail').html(user['email']);
+			$('#userEmail').val(user['email']);
 			if (user['displayName'] == 'student') {
 				window.location.replace("quizzes.html");
 			}
@@ -115,6 +116,7 @@
 							<label for="text">Quiz Name</label>
 							<input type="text" id="qname" class="form-control" required />
 						</div>
+						<input type="hidden" id="userEmail">
 						<button class="btn btn-outline-info btn-rounded my-4" type="button" onClick="addQuiz()">Add</button>
 					</form>
 					<div class="alert alert-warning d-none" role="alert">
@@ -138,10 +140,23 @@ function hideAlert() {
 }
 function addQuiz() {
 	qName = $('#qname').val();
-	if(qName == ''){
+	userEmail = $('#userEmail').val();
+	if (qName.length === 0) {
 		$('.alert').removeClass('d-none');
-		$('.alert').html('Quiz name filed is empty! Please fill and submit again.gm');
+		$('.alert').html('Quiz name field is empty!');
 		hideAlert()
+	}else if(qName.length < 3){
+		$('.alert').removeClass('d-none');
+		$('.alert').html('Quiz name must be atleast of three characters.');
+		hideAlert()
+	}else{
+		key = firebase.database().ref('student').push().key;
+		var student = {
+			name: name,
+			class: className,
+			key: key
+		}
+		firebase.database().ref('student/' + key).set(student);
 	}
 
 }
