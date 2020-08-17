@@ -5,60 +5,54 @@
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
-	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-	<script src="https://www.gstatic.com/firebasejs/7.17.2/firebase-app.js"></script>
-	<script src="https://www.gstatic.com/firebasejs/7.17.2/firebase-auth.js"></script>
-	<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 
- 
-	<script>
-	var firebaseConfig = {
-		apiKey: "AIzaSyBX9_yYquGUfFFPhay1XYWM21aVl9jM9Yk",
-		authDomain: "onestop-realdata.firebaseapp.com",
-		databaseURL: "https://onestop-realdata.firebaseio.com",
-		projectId: "onestop-realdata",
-		storageBucket: "onestop-realdata.appspot.com",
-		messagingSenderId: "425723882258",
-		appId: "1:425723882258:web:0af2b59e5e117a30b6e1cb"
-	};
-	firebase.initializeApp(firebaseConfig);
-	firebase.auth().onAuthStateChanged(function (user) {
-		if (user) {
-			if (user['displayName'] == 'teacher') {
-				window.location.replace("dashboard.html");
-			} else if (user['displayName'] == 'student') {
-				window.location.replace("quizzes.html");
-			}
-		} else {
-			console.log('User not log in')
-		}
-	});
-	</script>
 </head>
 <body>
-<div class="container py-5">
-	<div class="row">
-		<div class="col">
-			<h1 class="text-center">Quiz App</h1>
+<div class="container">
+	<nav class="navbar navbar-expand-lg navbar-light">
+		<a class="navbar-brand" href="index.html">QuizApp</a>
+		<button class="navbar-toggler isUser d-none" type="button" data-toggle="collapse"
+			data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+			aria-label="Toggle navigation">
+			<span class="navbar-toggler-icon"></span>
+		</button>
+
+		<div class="collapse navbar-collapse" id="navbarSupportedContent">
+			<ul class="navbar-nav ml-auto isUser d-none">
+				<li class="nav-item dropdown">
+					<a class="nav-link dropdown-toggle userEmail" href="#" id="navbarDropdown" role="button"
+						data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+						User
+					</a>
+					<div class="dropdown-menu" aria-labelledby="navbarDropdown">
+						<a class="dropdown-item" href="#" onClick="logout()">Logout</a>
+					</div>
+				</li>
+			</ul>
+			<ul class="navbar-nav ml-auto">
+				<li class="nav-item">
+					<a class="nav-link" href="signin.html">
+						Sign In
+					</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" href="signup.html">
+						Sign Up
+					</a>
+				</li>
+			</ul>
 		</div>
-	</div>
+	</nav>
+</div>
+<div class="container py-5">
 	<div class="row pt-5">
 		<div class="col-lg-7 col-md-8 col-sm-12 mx-auto">
-			<h4 class="text-center">Home</h4>
+			<h3 class="text-center">Online QuizApp</h3>
 		</div>
 	</div>
 
 
 </div>
 
-
-
-<script>
-
-
-</script>
 </body>
 </html>

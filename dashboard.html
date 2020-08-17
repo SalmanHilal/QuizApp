@@ -10,9 +10,23 @@
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 	<script src="https://www.gstatic.com/firebasejs/7.17.2/firebase-app.js"></script>
+	<script src="https://www.gstatic.com/firebasejs/7.17.2/firebase-database.js"></script>
 	<script src="https://www.gstatic.com/firebasejs/7.17.2/firebase-auth.js"></script>
 	<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
-
+	<style>
+	#addQuestion input[type="radio"] {
+		position: relative;
+		margin: 0;
+		right: -15px;
+		cursor: pointer;
+	}
+	@media (min-width: 750px){
+		.modal-dialog {
+			max-width: 700px;
+			width: 80%;
+		}
+	}
+	</style>
  
 	<script>
 	var firebaseConfig = {
@@ -30,6 +44,7 @@
 			$('.isUser').removeClass('d-none');
 			$('.userEmail').html(user['email']);
 			$('#userEmail').val(user['email']);
+			showData(user['email'])
 			if (user['displayName'] == 'student') {
 				window.location.replace("quizzes.html");
 			}
@@ -89,16 +104,19 @@
 					<table class="table "> 
 						<tbody>
 							<tr>
-								<th>ID</th>
+								<th>SR#</th>
 								<th>Name</th>
 								<th>Actions</th>
 							</tr>
 						</tbody>
 						<tbody id="quizes">
 							<tr>
-								<td>ID</td>
-								<td>Name</td>
-								<td>Actions</td>
+								<td colspan="3" class="w-100 text-center">
+								<button class="btn btn-default" disabled>
+									<span class="spinner-grow spinner-grow-sm"></span>
+									Loading..
+								</button>
+								</td>
 							</tr>
 						</tbody>
 					</table>
@@ -128,14 +146,115 @@
 
 
 </div>
+<div class="modal fade" id="addQuestion" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+	aria-hidden="true">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="exampleModalLabel">Add Question to <span class="qName"></span></h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+			<form>
+				<input type="hidden" id="quiz_id" value="">
+				<div class="form-group">
+					<input type="text" class="form-control" id="question" placeholder="Enter Question Here..">
+				</div>
+				<div class="input-group mb-2">
+					<div class="input-group-prepend">
+						<div class="input-group-text p-0">
+							<input class="form-check-input" type="radio" name="options" id="option1" value="option1">
+							<label class="form-check-label p-3" for="option1"></label>
+						</div>
+					</div>
+					<input type="text" class="form-control" id="op1" placeholder="Enter First Option">
+				</div>
+				<div class="input-group mb-2">
+					<div class="input-group-prepend">
+						<div class="input-group-text p-0">
+							<input class="form-check-input" type="radio" name="options" id="option2" value="option2">
+							<label class="form-check-label p-3" for="option2"></label>
+						</div>
+					</div>
+					<input type="text" class="form-control" id="op2" placeholder="Enter Second Option">
+				</div>
+				<div class="input-group mb-2">
+					<div class="input-group-prepend">
+						<div class="input-group-text p-0">
+							<input class="form-check-input" type="radio" name="options" id="option3" value="option3">
+							<label class="form-check-label p-3" for="option3"></label>
+						</div>
+					</div>
+					<input type="text" class="form-control" id="op3" placeholder="Enter Third Option">
+				</div>
+				<div class="input-group mb-2">
+					<div class="input-group-prepend">
+						<div class="input-group-text p-0">
+							<input class="form-check-input" type="radio" name="options" id="option4" value="option4">
+							<label class="form-check-label p-3" for="option4"></label>
+						</div>
+					</div>
+					<input type="text" class="form-control" id="op4" placeholder="Enter Fourth Option">
+				</div>
+			</form>
+				<div class="alert alert1 alert-warning d-none" role="alert">
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+				<button type="button" class="btn btn-primary" onClick="addQuestion()">Submit</button>
+			</div>
+		</div>
+	</div>
+</div>
 
 
+<div class="modal fade" id="viewQuestions" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+	aria-hidden="true">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="exampleModalLabel"><span class="quizName"></span></h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+					<table class="table ">
+						<tbody>
+							<tr>
+								<th>SR#</th>
+								<th>Question</th>
+								<th>Answer</th>
+							</tr>
+						</tbody>
+						<tbody id="quiz_questions">
+							<tr>
+								<td colspan="3" class="w-100 text-center">
+									<button class="btn btn-default" disabled>
+										<span class="spinner-grow spinner-grow-sm"></span>
+										Loading..
+									</button>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+			</div>
+		</div>
+	</div>
+</div>
 
 <script>
 
 function hideAlert() {
 	setTimeout(function () {
 		$(".alert").addClass('d-none');
+		$(".alert1").addClass('d-none');
 	}, 5000);
 }
 function addQuiz() {
@@ -150,20 +269,168 @@ function addQuiz() {
 		$('.alert').html('Quiz name must be atleast of three characters.');
 		hideAlert()
 	}else{
-		key = firebase.database().ref('student').push().key;
-		var student = {
-			name: name,
-			class: className,
+		key = firebase.database().ref('Quizzes').push().key;
+		email = userEmail.replace('.','-');
+		email = email.replace('@', '-');
+		var Quiz = {
+			name: qName,
+			email: userEmail,
 			key: key
 		}
-		firebase.database().ref('student/' + key).set(student);
+		firebase.database().ref('Quizzes/'+ email + '/' + key).set(Quiz);
+		showData(userEmail)
+		$('#qname').val('')
 	}
 
 }
+function showData(userEmail) {
+	uid = userEmail.replace('.', '-');
+	uid = uid.replace('@', '-');
+	var showData = '';
+	var ref = firebase.database().ref();
+	ref.once("value", function (snapshot) {
+		if (snapshot.val() != null) {
+			quizzes = snapshot.val()['Quizzes'];
+			quizzes = quizzes[uid];
+			counter = 1;
+			for (var key in quizzes) {
+				if (quizzes.hasOwnProperty(key)) {
+					showData += '<tr><td>' + counter + '</td><td class="quiz_name">' + quizzes[key]['name'] + '</td><td data-id="' + key + '"><button type="button" class="btn btn-danger btn-md deleteQuiz"  title="Delete Quiz"><i class="fa fa-trash"></i> </button> <button type="button" class="btn btn-success btn-md viewQuestions mr-1"  title="View Questions" data-toggle="modal" data-target="#viewQuestions"><i class="fa fa-eye"></i> </button><button type="button" class="btn btn-primary btn-md addQuestion"  title="Add Question" data-toggle="modal" data-target="#addQuestion"><i class="fa fa-plus"></i> </button> </td></tr>';
+					counter++;
+				}
+			}
+		} else {
+			showData = '<tr><td colspan="3" class="text-center">No records found!</td></tr>'
+		}
+		$('#quizes').html(showData);
+	}, function (error) {
+		console.log("Error: " + error.code);
+	});
+}
+$(document).on("click", '.deleteQuiz', function (event) {
+	userEmail = $('#userEmail').val();
+	usermail = userEmail.replace('.', '-');
+	usermail = usermail.replace('@', '-');
+	qID = $(this).parent().attr('data-id');
+	swal({
+		title: "Are you sure?",
+		text: "You won't be able to revert this!",
+		icon: "warning",
+		buttons: [
+			'No, cancel it!',
+			'Yes, I am sure!'
+		],
+		dangerMode: true,
+	}).then(function (isConfirm) {
+		if (isConfirm) {
 
-$(document).ready(function(){
+			swal({
+				title: 'Quiz Deleted!',
+				text: 'Quiz has been successfully deleted!',
+				icon: 'success'
+			})
+			var ref = firebase.database().ref('Quizzes/' + usermail + '/' + qID);
+			ref.remove()
+			.then(function () {
+				showData(userEmail)
+			})
+			.catch(function (error) {
+				console.log("Remove failed: " + error.message)
+			});
 
+		} else {
+			swal({
+				title: 'Error!',
+				text: 'Error in deleting quiz! Please try later.',
+				icon: 'error'
+			})
+		}
+	});
 });
+$(document).on("click", '.addQuestion', function (event) {
+	QuizName = $(this).parent().siblings('.quiz_name').text().trim();
+	$('.qName').html(QuizName);
+	$('#quiz_id').val($(this).parent().attr('data-id'));
+});
+function addQuestion(){
+	userEmail = $('#userEmail').val();
+	email = userEmail.replace('.', '-');
+	email = email.replace('@', '-');
+	qID = $('#quiz_id').val();
+	correct = '',answer='', isemptyfield=0;
+	$('#addQuestion input:radio').each(function () {
+		if ($(this).is(':checked')) {
+			correct = $(this).val();
+			answer = $(this).parent().parent().siblings('input[type="text"]').val();
+		}
+	});
+	$('#addQuestion input[type="text"]').each(function () {
+		if (!$(this).val()) {
+			isemptyfield=1;
+		}
+	});
+	if(isemptyfield == 1){
+		$('.alert1').removeClass('d-none');
+		$('.alert1').html('One of the above field is empty! Please check & try again.');
+		hideAlert()
+	}else if(correct == ''){
+		$('.alert1').removeClass('d-none');
+		$('.alert1').html('Please mark correct option before submit.');
+		hideAlert()
+	}else{
+		key = firebase.database().ref('Quizzes').push().key;
+		var Question = {
+			question: $('form #question').val(),
+			option1: $('form #op1').val(),
+			option2: $('form #op2').val(),
+			option3: $('form #op3').val(),
+			option4: $('form #op4').val(),
+			correct: correct,
+			answer: answer,
+			quizID: qID,
+			key: key
+		}
+		firebase.database().ref('Quizzes/' + email + '/' + qID +'/'+ key).set(Question)
+		.then(function () {
+			swal("Question has been added successfully!", {
+				icon: "success",
+			});
+			$('#addQuestion').modal('toggle');
+		})
+		.catch(function (error) {
+			console.log("Remove failed: " + error.message)
+		});
+	}
+
+}
+$(document).on("click", '.viewQuestions', function (event) {
+	userEmail = $('#userEmail').val();
+	usrid = userEmail.replace('.', '-');
+	usrid = usrid.replace('@', '-');
+	quiz_ID = $(this).parent().attr('data-id');
+	var show_Data = '';
+	var ref = firebase.database().ref();
+	ref.once("value", function (snapshot) {
+		if (snapshot.val() != null) {
+			quizzes = snapshot.val()['Quizzes'];
+			quizzes = quizzes[usrid][quiz_ID];
+			console.log(quizzes)
+			counter = 1;
+			for (var key in quizzes) {
+				if (quizzes.hasOwnProperty(key) && typeof(quizzes[key]['question']) != 'undefined'){
+					show_Data += '<tr><td>' + counter + '</td><td class="quiz_name">' + quizzes[key]['question'] + '</td><td data-id="' + key + '">'+ quizzes[key]['answer'] + '</td></tr>';
+					counter++;
+				}
+			}
+		} else {
+			show_Data = '<tr><td colspan="3" class="text-center">No records found!</td></tr>'
+		}
+		$('#quiz_questions').html(show_Data);
+	}, function (error) {
+		console.log("Error: " + error.code);
+	});
+});	
+
 </script>
 </body>
 </html>
