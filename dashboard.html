@@ -292,12 +292,16 @@ function showData(userEmail) {
 		if (snapshot.val() != null) {
 			quizzes = snapshot.val()['Quizzes'];
 			quizzes = quizzes[uid];
-			counter = 1;
-			for (var key in quizzes) {
-				if (quizzes.hasOwnProperty(key)) {
-					showData += '<tr><td>' + counter + '</td><td class="quiz_name">' + quizzes[key]['name'] + '</td><td data-id="' + key + '"><button type="button" class="btn btn-danger btn-md deleteQuiz"  title="Delete Quiz"><i class="fa fa-trash"></i> </button> <button type="button" class="btn btn-success btn-md viewQuestions mr-1"  title="View Questions" data-toggle="modal" data-target="#viewQuestions"><i class="fa fa-eye"></i> </button><button type="button" class="btn btn-primary btn-md addQuestion"  title="Add Question" data-toggle="modal" data-target="#addQuestion"><i class="fa fa-plus"></i> </button> </td></tr>';
-					counter++;
+			if(quizzes){
+				counter = 1;
+				for (var key in quizzes) {
+					if (quizzes.hasOwnProperty(key)) {
+						showData += '<tr><td>' + counter + '</td><td class="quiz_name">' + quizzes[key]['name'] + '</td><td data-id="' + key + '"><button type="button" class="btn btn-danger btn-md deleteQuiz"  title="Delete Quiz"><i class="fa fa-trash"></i> </button> <button type="button" class="btn btn-success btn-md viewQuestions mr-1"  title="View Questions" data-toggle="modal" data-target="#viewQuestions"><i class="fa fa-eye"></i> </button><button type="button" class="btn btn-primary btn-md addQuestion"  title="Add Question" data-toggle="modal" data-target="#addQuestion"><i class="fa fa-plus"></i> </button> </td></tr>';
+						counter++;
+					}
 				}
+			}else{
+				showData = '<tr><td colspan="3" class="text-center">No records found!</td></tr>'
 			}
 		} else {
 			showData = '<tr><td colspan="3" class="text-center">No records found!</td></tr>'
