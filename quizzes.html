@@ -123,18 +123,18 @@
 			<div class="modal-body">
 				<div class="row mb-3">
 					<div class="col-sm-12 col-md-6">
-						Name: <span class="quizName"></span>
+						<b>Name:</b> <span class="quizName"></span>
 					</div>
 					<div class="col-sm-12 col-md-6">
-						Time: <span class="">05 minutes</span>
+						<b>Negative Marking:</b> <span class="">No</span>
 					</div>
 				</div>
 				<div class="row mb-3">
 					<div class="col-sm-12 col-md-6">
-						Type: <span class="">Multiple Choice</span>
+						<b>Type:</b> <span class="">Multiple Choice</span>
 					</div>
 					<div class="col-sm-12 col-md-6">
-						No. of Question: <span class="">10</span>
+						<b>No. of Question:</b> <span class="">5</span>
 					</div>
 				</div>
 			</div>
@@ -158,7 +158,7 @@ function showData() {
 				for (var key in quizzes) {
 					if (quizzes) {
 						for(item in quizzes[key]){
-							showData += '<tr><td>' + counter + '</td><td class="quiz_name">' + quizzes[key][item]['name'] + '</td><td data-id="' + item + '"><button type="button" class="btn btn-primary btn-md viewDetails mr-1"  title="View Details" data-toggle="modal" data-target="#viewDetails"><i class="fa fa-eye"></i> </button><button type="button" class="btn btn-success btn-md startQuiz"  title="Attempt Quiz" data-toggle="modal" data-target="#startQuiz"><i class="fa fa-sign-in"></i> </button> </td></tr>';
+							showData += '<tr><td>' + counter + '</td><td class="quiz_name">' + quizzes[key][item]['name'] + '</td><td data-id="' + item + '"><button type="button" class="btn btn-primary btn-md viewDetails mr-1"  title="View Details" data-toggle="modal" data-target="#viewDetails"><i class="fa fa-eye"></i> </button><button type="button" class="btn btn-success btn-md startQuiz"  title="Attempt Quiz"><i class="fa fa-sign-in"></i> </button> </td></tr>';
 							counter++;
 						}
 					}
@@ -178,6 +178,24 @@ showData()
 $(document).on("click", '.viewDetails', function (event) {
 	$('.quizName').html($(this).parent().siblings('.quiz_name').text());
 });	
+$(document).on("click", '.startQuiz', function (event) {
+	qID = $(this).parent().attr('data-id');
+	swal({
+		title: "Confirmation",
+		text: "Are you sure want to start this quiz?",
+		icon: "info",
+		buttons: [
+			'No',
+			'Yes, Start Quiz!'
+		],
+		dangerMode: false,
+	}).then(function (isConfirm) {
+		if (isConfirm) {
+			window.open('quiz.html?id=' + qID, '_blank');
+		} 
+	});
+	
+});
 
 </script>
 </body>

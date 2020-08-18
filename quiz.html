@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Quiz | Quiz App</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+	<script src="https://www.gstatic.com/firebasejs/7.17.2/firebase-app.js"></script>
+	<script src="https://www.gstatic.com/firebasejs/7.17.2/firebase-auth.js"></script>
+	<script src="https://www.gstatic.com/firebasejs/7.17.2/firebase-database.js"></script>
+	<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+
+ 
+	<script>
+	var firebaseConfig = {
+		apiKey: "AIzaSyBX9_yYquGUfFFPhay1XYWM21aVl9jM9Yk",
+		authDomain: "onestop-realdata.firebaseapp.com",
+		databaseURL: "https://onestop-realdata.firebaseio.com",
+		projectId: "onestop-realdata",
+		storageBucket: "onestop-realdata.appspot.com",
+		messagingSenderId: "425723882258",
+		appId: "1:425723882258:web:0af2b59e5e117a30b6e1cb"
+	};
+	firebase.initializeApp(firebaseConfig);
+	firebase.auth().onAuthStateChanged(function (user) {
+		if (user) {
+			if (user['displayName'] == 'teacher') {
+				window.location.replace("dashboard.html");
+			}
+		} else {
+			window.location.replace("signin.html");
+		}
+	});
+	</script>
+</head>
+<body>
+
+
+<div class="container py-5">
+	<div class="row">
+		<div class="col-sm-12 col-md-10 mx-auto" id="quizContainer">
+			<div class="card shadow p-3 mb-5 border-0 bg-white rounded">
+				test<br><br><br><br><br>
+			</div>
+		</div>
+	</div>
+
+</div>
+
+
+<script>
+$(document).ready(function () {
+	var id = new URL(window.location.href).searchParams.get("id");
+	var show_Data = '',counter=1;
+	var ref = firebase.database().ref();
+	ref.once("value", function (snapshot) {
+		if (snapshot.val() != null) {
+			quizzes = snapshot.val()['Quizzes'];
+			if (quizzes) {
+				for (var key in quizzes) {
+					if (quizzes) {
+						for (item in quizzes[key]) {
+							if(item == id){
+
+								show_Data += '<div class="card shadow p-4 mb-5 border-0 bg-white rounded"> <h5>Question ' + counter + ' of 5</h5>';
+								for(i in quizzes[key][item]){
+									if(i != 'email' && i != 'key' && i != 'name'){
+										show_Data += '<div><h4>'+ quizzes[key][item][i]['question'] +'</h4></div>';
+										show_Data += '<div>' + quizzes[key][item][i]['question'] + '</div>';
+									}
+								}
+								show_Data += '</div>';
+								
+							}
+						}
+					}
+				}
+			} else {
+				show_Data = 'No records found!'
+			}
+		} else {
+			show_Data = 'No records found!'
+		}
+		$('#quizContainer').html(show_Data);
+	}, function (error) {
+		console.log("Error: " + error.code);
+	});
+});
+</script>
+</body>
+</html>
