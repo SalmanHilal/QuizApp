@@ -13,7 +13,22 @@
 	<script src="https://www.gstatic.com/firebasejs/7.17.2/firebase-auth.js"></script>
 	<script src="https://www.gstatic.com/firebasejs/7.17.2/firebase-database.js"></script>
 	<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
-
+	<style>
+	.options-box .option {
+		background-color: #cccccc;
+		padding: 13px 15px;
+		font-size: 16px;
+		line-height: 22px;
+		color: #000000;
+		border-radius: 5px;
+		margin-bottom: 10px;
+		cursor: pointer;
+		text-transform: capitalize;
+		animation: fadeIn 0.3s ease forwards;
+		position: relative;
+		overflow: hidden;
+	}
+	</style>
  
 	<script>
 	var firebaseConfig = {
@@ -43,8 +58,11 @@
 <div class="container py-5">
 	<div class="row">
 		<div class="col-sm-12 col-md-10 mx-auto" id="quizContainer">
-			<div class="card shadow p-3 mb-5 border-0 bg-white rounded">
-				test<br><br><br><br><br>
+			<div class="card shadow p-3 mb-5 border-0 bg-white rounded text-center py-5">
+				<button class="btn btn-default" disabled>
+					<span class="spinner-grow spinner-grow-sm"></span>
+					Loading..
+				</button>
 			</div>
 		</div>
 	</div>
@@ -65,14 +83,19 @@ $(document).ready(function () {
 					if (quizzes) {
 						for (item in quizzes[key]) {
 							if(item == id){
-
-								show_Data += '<div class="card shadow p-4 mb-5 border-0 bg-white rounded"> <h5>Question ' + counter + ' of 5</h5>';
+								show_Data += '<div class="card shadow p-4 mb-5 border-0 bg-white rounded">';
 								for(i in quizzes[key][item]){
 									if(i != 'email' && i != 'key' && i != 'name'){
-										show_Data += '<div><h4>'+ quizzes[key][item][i]['question'] +'</h4></div>';
-										show_Data += '<div>' + quizzes[key][item][i]['question'] + '</div>';
-									}
-								}
+										show_Data += '<h5>Question ' + counter + ' of 5</h5><div id="q' + counter +'">';
+										show_Data += '<div class="h3 my-3 font-weight-normal">'+ quizzes[key][item][i]['question'] +'</div>';
+										show_Data += '<div class="options-box">';
+										show_Data += '<div class="h4 font-weight-normal option option1">' + quizzes[key][item][i]['option1'] + '</div>';
+										show_Data += '<div class="h4 font-weight-normal option option3">' + quizzes[key][item][i]['option3'] + '</div>';
+										show_Data += '<div class="h4 font-weight-normal option option4">' + quizzes[key][item][i]['option4'] + '</div>';
+										show_Data += '<div class="h4 font-weight-normal option option2">' + quizzes[key][item][i]['option2'] + '</div></div></div>';
+										counter++;
+									} 
+								} 
 								show_Data += '</div>';
 								
 							}
