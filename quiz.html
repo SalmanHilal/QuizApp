@@ -4,7 +4,7 @@
 	<title>Quiz | Quiz App</title>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+	<link rel="stylesheet" href="assets/bootstrap.min.css">
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
@@ -27,6 +27,7 @@
 		animation: fadeIn 0.3s ease forwards;
 		position: relative;
 		overflow: hidden;
+		font-weight: 500;
 	}
 	.quiz-box{
 		display: none;
@@ -44,6 +45,13 @@
 	}
 	#results tr:last-child td{
 		border-bottom: 1px solid #dee2e6;
+	}
+	.options-box .option:hover {
+		background: #cfd9e2;
+	}
+	.options-box .option.selected{
+		border: 2px solid #90a0ae;
+		font-weight: 700 !important;
 	}
 	</style>
  
@@ -69,7 +77,7 @@
 	</script>
 </head>
 <body>
-<div class="container">
+<div class="container p-0">
 	<nav class="navbar navbar-expand-lg navbar-light">
 		<a class="navbar-brand" href="#">QuizApp</a>
 		<button class="navbar-toggler isUser d-none" type="button" data-toggle="collapse"
@@ -112,6 +120,9 @@ var answers = [], results = [], resultData = '', QuizName = '';
 var id = new URL(window.location.href).searchParams.get("id");
 now = new Date().toLocaleString().replace(/ /g, "").replace(/,/g, "-").replace(/:/g, "-").replace(/\//g, "-");
 $(document).ready(function () {
+	if(id == null){
+		window.location.replace("quizzes.html");
+	}
 	var show_Data = '',counter=1;
 	var ref = firebase.database().ref();
 	ref.once("value", function (snapshot) {
@@ -129,10 +140,10 @@ $(document).ready(function () {
 									show_Data += '<div id="q' + counter +'" class="quiz-box '+(counter==1?'current':'')+'"><h5>Question ' + counter + ' of 5</h5>';
 									show_Data += '<div class="h3 my-3 font-weight-normal">'+ quizzes[key][item][i]['question'] +'</div>';
 									show_Data += '<div class="options-box">';
-									show_Data += '<div class="h4 font-weight-normal option option1" id="option1">' + quizzes[key][item][i]['option1'] + '</div>';
-									show_Data += '<div class="h4 font-weight-normal option option2" id="option2">' + quizzes[key][item][i]['option2'] + '</div>';
-									show_Data += '<div class="h4 font-weight-normal option option3" id="option3">' + quizzes[key][item][i]['option3'] + '</div>';
-									show_Data += '<div class="h4 font-weight-normal option option4" id="option4">' + quizzes[key][item][i]['option4'] + '</div></div></div>';
+									show_Data += '<div class="h4 option option1" id="option1">' + quizzes[key][item][i]['option1'] + '</div>';
+									show_Data += '<div class="h4 option option2" id="option2">' + quizzes[key][item][i]['option2'] + '</div>';
+									show_Data += '<div class="h4 option option3" id="option3">' + quizzes[key][item][i]['option3'] + '</div>';
+									show_Data += '<div class="h4 option option4" id="option4">' + quizzes[key][item][i]['option4'] + '</div></div></div>';
 									counter++;
 								} 
 							}
@@ -152,6 +163,7 @@ $(document).ready(function () {
 	});
 });
 $(document).on("click", '.quiz-box .option', function (e) {
+	$(this).addClass('selected');
 	currentQuesID = $(this).parent().parent().attr('id').replace('q', '');
 	userAnswer = $(this).attr('id');
 	score = answers[currentQuesID-1] == userAnswer? '10':'0';
@@ -169,8 +181,8 @@ $(document).on("click", '.quiz-box .option', function (e) {
 	firebase.database().ref('Results/' + email + '/' + id +'/' + now + '/' + key).set(Result);
 
 	if (currentQuesID != 5) {
-		$('.quiz-box').removeClass('current');
-		$(this).parent().parent().next().addClass('current');
+			$('.quiz-box').removeClass('current');
+			$(this).parent().parent().next().addClass('current');
 	} else {
 		$('#quizContainer').hide()
 		var obtained = 0, correctAns=0;
