@@ -28,6 +28,12 @@
 		position: relative;
 		overflow: hidden;
 	}
+	.quiz-box{
+		display: none;
+	}
+	.quiz-box.current{
+		display: block;
+	}
 	</style>
  
 	<script>
@@ -80,25 +86,22 @@ $(document).ready(function () {
 			quizzes = snapshot.val()['Quizzes'];
 			if (quizzes) {
 				for (var key in quizzes) {
-					if (quizzes) {
-						for (item in quizzes[key]) {
-							if(item == id){
-								show_Data += '<div class="card shadow p-4 mb-5 border-0 bg-white rounded">';
-								for(i in quizzes[key][item]){
-									if(i != 'email' && i != 'key' && i != 'name'){
-										show_Data += '<h5>Question ' + counter + ' of 5</h5><div id="q' + counter +'">';
-										show_Data += '<div class="h3 my-3 font-weight-normal">'+ quizzes[key][item][i]['question'] +'</div>';
-										show_Data += '<div class="options-box">';
-										show_Data += '<div class="h4 font-weight-normal option option1">' + quizzes[key][item][i]['option1'] + '</div>';
-										show_Data += '<div class="h4 font-weight-normal option option3">' + quizzes[key][item][i]['option3'] + '</div>';
-										show_Data += '<div class="h4 font-weight-normal option option4">' + quizzes[key][item][i]['option4'] + '</div>';
-										show_Data += '<div class="h4 font-weight-normal option option2">' + quizzes[key][item][i]['option2'] + '</div></div></div>';
-										counter++;
-									} 
+					for (item in quizzes[key]) {
+						if(item == id){
+							show_Data += '<div class="card shadow p-4 mb-5 border-0 bg-white rounded">';
+							for(i in quizzes[key][item]){
+								if(i != 'email' && i != 'key' && i != 'name'){
+									show_Data += '<div id="q' + counter +'" class="quiz-box '+(counter==1?'current':'')+'"><h5>Question ' + counter + ' of 5</h5>';
+									show_Data += '<div class="h3 my-3 font-weight-normal">'+ quizzes[key][item][i]['question'] +'</div>';
+									show_Data += '<div class="options-box">';
+									show_Data += '<div class="h4 font-weight-normal option option1">' + quizzes[key][item][i]['option1'] + '</div>';
+									show_Data += '<div class="h4 font-weight-normal option option3">' + quizzes[key][item][i]['option3'] + '</div>';
+									show_Data += '<div class="h4 font-weight-normal option option4">' + quizzes[key][item][i]['option4'] + '</div>';
+									show_Data += '<div class="h4 font-weight-normal option option2">' + quizzes[key][item][i]['option2'] + '</div></div></div>';
+									counter++;
 								} 
-								show_Data += '</div>';
-								
 							}
+							show_Data += '</div>';	
 						}
 					}
 				}
@@ -112,6 +115,16 @@ $(document).ready(function () {
 	}, function (error) {
 		console.log("Error: " + error.code);
 	});
+});
+$(document).on("click", '.quiz-box .option', function (e) {
+	currentQuizID = $(this).parent().parent().attr('id').replace('q', '');
+	if(currentQuizID != 5){
+		$('.quiz-box').removeClass('current');
+		$(this).parent().parent().next().addClass('current');
+	}else{
+		alert('result')
+	}
+
 });
 </script>
 </body>
