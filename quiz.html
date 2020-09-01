@@ -124,7 +124,7 @@ $(document).ready(function () {
 							show_Data += '<div class="card shadow p-4 mb-5 border-0 bg-white rounded">';
 							for(i in quizzes[key][item]){
 								QuizName = quizzes[key][item]['name'];
-								if(i != 'email' && i != 'key' && i != 'name'){
+								if(i != 'email' && i != 'key' && i != 'name' && i != 'status'){
 									answers.push(quizzes[key][item][i]['correct'])
 									show_Data += '<div id="q' + counter +'" class="quiz-box '+(counter==1?'current':'')+'"><h5>Question ' + counter + ' of 5</h5>';
 									show_Data += '<div class="h3 my-3 font-weight-normal">'+ quizzes[key][item][i]['question'] +'</div>';
@@ -166,7 +166,7 @@ $(document).on("click", '.quiz-box .option', function (e) {
 		key: key
 	}
 	results.push(score);
-	firebase.database().ref('Results/' + email + '/' + now +'/' + id + '/' + key).set(Result);
+	firebase.database().ref('Results/' + email + '/' + id +'/' + now + '/' + key).set(Result);
 
 	if (currentQuesID != 5) {
 		$('.quiz-box').removeClass('current');

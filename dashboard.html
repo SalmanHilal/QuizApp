@@ -13,6 +13,8 @@
 	<script src="https://www.gstatic.com/firebasejs/7.17.2/firebase-database.js"></script>
 	<script src="https://www.gstatic.com/firebasejs/7.17.2/firebase-auth.js"></script>
 	<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+	<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs4/dt-1.10.21/datatables.min.css" />
+	<script type="text/javascript" src="https://cdn.datatables.net/v/bs4/dt-1.10.21/datatables.min.js"></script>
 	<style>
 	#addQuestion input[type="radio"] {
 		position: relative;
@@ -95,35 +97,10 @@
 		</div>
 	</div>
 	<div class="row pt-5">
-		<div class="col-lg-8 col-md-7 col-sm-12">
-			<div class="card">
-				<h5 class="card-header info-color white-text text-center py-4">
-					<strong>All Quizzes</strong>
-				</h5>
-				<div class="card-body p-0">
-					<table class="table "> 
-						<tbody>
-							<tr>
-								<th>SR#</th>
-								<th>Name</th>
-								<th>Actions</th>
-							</tr>
-						</tbody>
-						<tbody id="quizes">
-							<tr>
-								<td colspan="3" class="w-100 text-center">
-								<button class="btn btn-default" disabled>
-									<span class="spinner-grow spinner-grow-sm"></span>
-									Loading..
-								</button>
-								</td>
-							</tr>
-						</tbody>
-					</table>
-				</div>
-			</div>
+		<div class="col-sm-12 p-0">
+			<p><strong>Note:</strong> Quiz must have five questions to be activated.</p>
 		</div>
-		<div class="col-lg-4 col-md-5 col-sm-12">
+		<div class="col-lg-4 col-md-12 col-sm-12 p-0">
 			<div class="card">
 				<h5 class="card-header info-color white-text text-center py-4">
 					<strong>Add Quiz</strong>
@@ -139,6 +116,34 @@
 					</form>
 					<div class="alert alert-warning d-none" role="alert">
 					</div>
+				</div>
+			</div>
+		</div>
+		<div class="col-lg-8 col-md-12 col-sm-12">
+			<div class="card">
+				<h5 class="card-header info-color white-text text-center py-4">
+					<strong>All Quizzes</strong>
+				</h5>
+				<div class="card-body">
+					<table id="quizesTable" class="table table-bordered" style="width:100%">
+						<thead>
+							<tr>
+								<th>SR#</th>
+								<th>Name</th>
+								<th>Actions</th>
+							</tr>
+						</thead>
+						<tbody id="quizes">
+							<tr>
+								<td colspan="3" class="w-100 text-center">
+								<button class="btn btn-default" disabled>
+									<span class="spinner-grow spinner-grow-sm"></span>
+									Loading..
+								</button>
+								</td>
+							</tr>
+						</tbody>
+					</table>
 				</div>
 			</div>
 		</div>
@@ -222,25 +227,27 @@
 				</button>
 			</div>
 			<div class="modal-body">
-					<table class="table ">
-						<tbody>
-							<tr>
-								<th>SR#</th>
-								<th>Question</th>
-								<th>Answer</th>
-							</tr>
-						</tbody>
-						<tbody id="quiz_questions">
-							<tr>
-								<td colspan="3" class="w-100 text-center">
-									<button class="btn btn-default" disabled>
-										<span class="spinner-grow spinner-grow-sm"></span>
-										Loading..
-									</button>
-								</td>
-							</tr>
-						</tbody>
-					</table>
+				<table id="quizesTable" class="table table-bordered" style="width:100%">
+					<thead>
+						<tr>
+							<th>SR#</th>
+							<th>Question</th>
+							<th>Answer</th>
+						</tr>
+					</thead>
+					<tbody id="quiz_questions">
+						<tr>
+							<td></td>
+							<td class="w-100 text-center">
+								<button class="btn btn-default" disabled>
+									<span class="spinner-grow spinner-grow-sm"></span>
+									Loading..
+								</button>
+							</td>
+							<td></td>
+						</tr>
+					</tbody>
+				</table>
 			</div>
 			<div class="modal-footer">
 				<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -275,13 +282,13 @@ function addQuiz() {
 		var Quiz = {
 			name: qName,
 			email: userEmail,
-			key: key
+			key: key,
+			status:'inactive'
 		}
 		firebase.database().ref('Quizzes/'+ email + '/' + key).set(Quiz);
 		showData(userEmail)
 		$('#qname').val('')
 	}
-
 }
 function showData(userEmail) {
 	uid = userEmail.replace('.', '-');
@@ -291,8 +298,8 @@ function showData(userEmail) {
 	ref.once("value", function (snapshot) {
 		if (snapshot.val() != null) {
 			quizzes = snapshot.val()['Quizzes'];
-			quizzes = quizzes[uid];
 			if(quizzes){
+				quizzes = quizzes[uid];
 				counter = 1;
 				for (var key in quizzes) {
 					if (quizzes.hasOwnProperty(key)) {
@@ -307,6 +314,7 @@ function showData(userEmail) {
 			showData = '<tr><td colspan="3" class="text-center">No records found!</td></tr>'
 		}
 		$('#quizes').html(showData);
+		$('#quizesTable').DataTable();
 	}, function (error) {
 		console.log("Error: " + error.code);
 	});
@@ -327,7 +335,6 @@ $(document).on("click", '.deleteQuiz', function (event) {
 		dangerMode: true,
 	}).then(function (isConfirm) {
 		if (isConfirm) {
-
 			swal({
 				title: 'Quiz Deleted!',
 				text: 'Quiz has been successfully deleted!',
@@ -341,13 +348,6 @@ $(document).on("click", '.deleteQuiz', function (event) {
 			.catch(function (error) {
 				console.log("Remove failed: " + error.message)
 			});
-
-		} else {
-			swal({
-				title: 'Error!',
-				text: 'Error in deleting quiz! Please try later.',
-				icon: 'error'
-			})
 		}
 	});
 });
@@ -356,7 +356,35 @@ $(document).on("click", '.addQuestion', function (event) {
 	$('.qName').html(QuizName);
 	$('#quiz_id').val($(this).parent().attr('data-id'));
 });
-function addQuestion(){
+function checkQuestions(qID) {
+	counter = 0;
+	userEmail = $('#userEmail').val();
+	email = userEmail.replace('.', '-');
+	email = email.replace('@', '-');
+	qID = qID;
+	var ref = firebase.database().ref();
+	ref.once("value", function (snapshot) {
+		if (snapshot.val() != null) {
+			quizzes = snapshot.val()['Quizzes'];
+			quizzes = quizzes[email][qID];
+			for (var key in quizzes) {
+				if (quizzes.hasOwnProperty(key) && typeof (quizzes[key]['question']) != 'undefined') {
+					counter++;
+				}
+			}
+		} else {
+			console.log('No Records Found!')
+		}
+		if (counter == 5) {
+			firebase.database().ref('Quizzes/' + email + '/' + qID).update({ status: "active" });
+		}else{
+			firebase.database().ref('Quizzes/' + email + '/' + qID).update({ status: "inactive" });
+		}
+	}, function (error) {
+		console.log("Error: " + error.code);
+	});
+}
+function addQuestion(){ 
 	userEmail = $('#userEmail').val();
 	email = userEmail.replace('.', '-');
 	email = email.replace('@', '-');
@@ -382,6 +410,7 @@ function addQuestion(){
 		$('.alert1').html('Please mark correct option before submit.');
 		hideAlert()
 	}else{
+		
 		key = firebase.database().ref('Quizzes').push().key;
 		var Question = {
 			question: $('form #question').val(),
@@ -400,6 +429,7 @@ function addQuestion(){
 				icon: "success",
 			});
 			$('#addQuestion').modal('toggle');
+			checkQuestions(qID);
 		})
 		.catch(function (error) {
 			console.log("Remove failed: " + error.message)
@@ -418,16 +448,22 @@ $(document).on("click", '.viewQuestions', function (event) {
 		if (snapshot.val() != null) {
 			quizzes = snapshot.val()['Quizzes'];
 			quizzes = quizzes[usrid][quiz_ID];
-			console.log(quizzes)
 			counter = 1;
-			for (var key in quizzes) {
-				if (quizzes.hasOwnProperty(key) && typeof(quizzes[key]['question']) != 'undefined'){
-					show_Data += '<tr><td>' + counter + '</td><td class="quiz_name">' + quizzes[key]['question'] + '</td><td data-id="' + key + '">'+ quizzes[key]['answer'] + '</td></tr>';
-					counter++;
+			if(quizzes){
+				for (var key in quizzes) {
+					if (quizzes.hasOwnProperty(key) && typeof (quizzes[key]['question']) != 'undefined') {
+						show_Data += '<tr><td>' + counter + '</td><td class="quiz_name">' + quizzes[key]['question'] + '</td><td data-id="' + key + '">' + quizzes[key]['answer'] + '</td></tr>';
+						counter++;
+					}
 				}
+			}else{
+				show_Data = '<tr><td colspan="3" class="text-center">No records found!</td></tr>';
 			}
 		} else {
-			show_Data = '<tr><td colspan="3" class="text-center">No records found!</td></tr>'
+			show_Data = '<tr><td colspan="3" class="text-center">No records found!</td></tr>';
+		}
+		if(counter <= 1){
+			show_Data = '<tr><td colspan="3" class="text-center">No records found!</td></tr>';
 		}
 		$('#quiz_questions').html(show_Data);
 	}, function (error) {
