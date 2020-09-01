@@ -30,9 +30,20 @@
 	}
 	.quiz-box{
 		display: none;
+
 	}
 	.quiz-box.current{
 		display: block;
+	}
+	#results td{
+		font-size: 1.3rem;
+		font-weight: 500;
+	}
+	#results tr:first-child td{
+		border-top:0;
+	}
+	#results tr:last-child td{
+		border-bottom: 1px solid #dee2e6;
 	}
 	</style>
  
@@ -46,23 +57,43 @@
 		messagingSenderId: "425723882258",
 		appId: "1:425723882258:web:0af2b59e5e117a30b6e1cb"
 	};
-	firebase.initializeApp(firebaseConfig);
-	firebase.auth().onAuthStateChanged(function (user) {
-		if (user) {
-			if (user['displayName'] == 'teacher') {
-				window.location.replace("dashboard.html");
+		firebase.initializeApp(firebaseConfig);
+		firebase.auth().onAuthStateChanged(function (user) {
+			if (user) {
+				$('.isUser').removeClass('d-none');
+				$('.userEmail').html(user['email']);
+			} else {
+				window.location.replace("signin.html");
 			}
-		} else {
-			window.location.replace("signin.html");
-		}
-	});
+		});
 	</script>
 </head>
 <body>
+<div class="container">
+	<nav class="navbar navbar-expand-lg navbar-light">
+		<a class="navbar-brand" href="#">QuizApp</a>
+		<button class="navbar-toggler isUser d-none" type="button" data-toggle="collapse"
+			data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+			aria-label="Toggle navigation">
+			<span class="navbar-toggler-icon"></span>
+		</button>
 
+		<div class="collapse navbar-collapse" id="navbarSupportedContent">
+			<ul class="navbar-nav ml-auto isUser d-none">
+				<li class="nav-item">
+					<a class="nav-link userEmail" href="#">
+						User
+					</a>
+				</li>
+			</ul>
+		</div>
+	</nav>
+</div>
 
 <div class="container py-5">
 	<div class="row">
+		<div class="col-sm-12 col-md-10 mx-auto" id="results">
+		</div>
 		<div class="col-sm-12 col-md-10 mx-auto" id="quizContainer">
 			<div class="card shadow p-3 mb-5 border-0 bg-white rounded text-center py-5">
 				<button class="btn btn-default" disabled>
@@ -77,8 +108,10 @@
 
 
 <script>
+var answers = [], results = [], resultData = '', QuizName = '';
+var id = new URL(window.location.href).searchParams.get("id");
+now = new Date().toLocaleString().replace(/ /g, "").replace(/,/g, "-").replace(/:/g, "-").replace(/\//g, "-");
 $(document).ready(function () {
-	var id = new URL(window.location.href).searchParams.get("id");
 	var show_Data = '',counter=1;
 	var ref = firebase.database().ref();
 	ref.once("value", function (snapshot) {
@@ -90,14 +123,16 @@ $(document).ready(function () {
 						if(item == id){
 							show_Data += '<div class="card shadow p-4 mb-5 border-0 bg-white rounded">';
 							for(i in quizzes[key][item]){
+								QuizName = quizzes[key][item]['name'];
 								if(i != 'email' && i != 'key' && i != 'name'){
+									answers.push(quizzes[key][item][i]['correct'])
 									show_Data += '<div id="q' + counter +'" class="quiz-box '+(counter==1?'current':'')+'"><h5>Question ' + counter + ' of 5</h5>';
 									show_Data += '<div class="h3 my-3 font-weight-normal">'+ quizzes[key][item][i]['question'] +'</div>';
 									show_Data += '<div class="options-box">';
-									show_Data += '<div class="h4 font-weight-normal option option1">' + quizzes[key][item][i]['option1'] + '</div>';
-									show_Data += '<div class="h4 font-weight-normal option option3">' + quizzes[key][item][i]['option3'] + '</div>';
-									show_Data += '<div class="h4 font-weight-normal option option4">' + quizzes[key][item][i]['option4'] + '</div>';
-									show_Data += '<div class="h4 font-weight-normal option option2">' + quizzes[key][item][i]['option2'] + '</div></div></div>';
+									show_Data += '<div class="h4 font-weight-normal option option1" id="option1">' + quizzes[key][item][i]['option1'] + '</div>';
+									show_Data += '<div class="h4 font-weight-normal option option2" id="option2">' + quizzes[key][item][i]['option2'] + '</div>';
+									show_Data += '<div class="h4 font-weight-normal option option3" id="option3">' + quizzes[key][item][i]['option3'] + '</div>';
+									show_Data += '<div class="h4 font-weight-normal option option4" id="option4">' + quizzes[key][item][i]['option4'] + '</div></div></div>';
 									counter++;
 								} 
 							}
@@ -117,14 +152,45 @@ $(document).ready(function () {
 	});
 });
 $(document).on("click", '.quiz-box .option', function (e) {
-	currentQuizID = $(this).parent().parent().attr('id').replace('q', '');
-	if(currentQuizID != 5){
+	currentQuesID = $(this).parent().parent().attr('id').replace('q', '');
+	userAnswer = $(this).attr('id');
+	score = answers[currentQuesID-1] == userAnswer? '10':'0';
+	key = firebase.database().ref('Quizzes').push().key;
+	userEmail = $('.userEmail').text().trim();
+	email = userEmail.replace('.', '-');
+	email = email.replace('@', '-');
+	var Result = {
+		userAnswer: userAnswer,
+		correctAnswer: answers[currentQuesID - 1],
+		score: score,
+		key: key
+	}
+	results.push(score);
+	firebase.database().ref('Results/' + email + '/' + now +'/' + id + '/' + key).set(Result);
+
+	if (currentQuesID != 5) {
 		$('.quiz-box').removeClass('current');
 		$(this).parent().parent().next().addClass('current');
-	}else{
-		alert('result')
+	} else {
+		$('#quizContainer').hide()
+		var obtained = 0, correctAns=0;
+		for (var i in results) {
+			obtained+= parseInt(results[i]);
+			if(results[i] == 10){
+				correctAns += 1;
+			}
+		}
+		percentage = (100 * obtained) / 50;
+		resultData += '<div class="card shadow p-4 mb-5 border-0 bg-white rounded"><table class="table">';
+		resultData += '<tr class="first-row"><td>Quiz</td><td>'+ QuizName +'</td></tr>';
+		resultData += '<tr><td>Total Questions</td><td>05</td></tr>';
+		resultData += '<tr><td>Correct Answers</td><td>'+(correctAns==0?'':'0') + correctAns + '</td></tr>';
+		resultData += '<tr><td>Total Marks</td><td>50</td></tr>';
+		resultData += '<tr><td>Marks Obtained</td><td>'+ obtained +'</td></tr>';
+		resultData += '<tr><td>Percentage</td><td>'+ percentage +'%</td></tr>';
+		resultData += '</table><a href="quizzes.html" class="btn btn-primary d-block mx-auto">Go Back</a></div>';
+		$('#results').html(resultData);
 	}
-
 });
 </script>
 </body>
