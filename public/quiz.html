@@ -119,7 +119,7 @@
 
 
 <script>
-var answers = [], results = [], resultData = '', QuizName = '';
+var answers = [], results = [], resultData = '', QuizName = '', teacherEmail = '';
 var id = new URL(window.location.href).searchParams.get("id");
 now = new Date().toLocaleString().replace(/ /g, "").replace(/,/g, "-").replace(/:/g, "-").replace(/\//g, "-");
 datetime = new Date().toLocaleString();
@@ -138,6 +138,9 @@ $(document).ready(function () {
 						if(item == id){
 							show_Data += '<div class="card shadow p-4 mb-5 border-0 bg-white rounded">';
 							for(i in quizzes[key][item]){
+								if(counter == 1){
+									teacherEmail = quizzes[key][item]['email']
+								}
 								QuizName = quizzes[key][item]['name'];
 								if(i != 'email' && i != 'key' && i != 'name' && i != 'status'){
 									answers.push(quizzes[key][item][i]['correct'])
@@ -188,6 +191,7 @@ $(document).on("click", '.quiz-box .option', function (e) {
 	results.push(score);
 	if (currentQuesID == 1) {
 		var Details = {
+			teacherEmail: teacherEmail,
 			name: QuizName,
 			key: id,
 			datetime: datetime,

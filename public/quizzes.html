@@ -95,7 +95,7 @@
 						</li>
 						<li class="nav-item w-50">
 							<a class="nav-link" id="myResults-tab" data-toggle="tab" href="#myResults" role="tab" aria-controls="myResults"
-								aria-selected="false">My Results</a>
+								aria-selected="false">Results</a>
 						</li>
 					</ul>
 				</h5>
@@ -246,13 +246,12 @@ function showResutlts(userEmail) {
 				counter = 1;
 				for (var key in results) {
 					if (results.hasOwnProperty(key)) {
-							console.log(results[key])
-							showData += '<tr><td>'+ counter +'</td>';
-							showData += '<td>' + results[key]['name'] + '</td>';
-							showData += '<td>' + results[key]['datetime'] + '</td>';
-							showData += '<td> 50 </td>';
-							showData += '<td>' + results[key]['marksObtained'] + '</td>';
-							showData += '<td>' + results[key]['percentage'] + '%</td></tr>';
+						showData += '<tr><td>'+ counter +'</td>';
+						showData += '<td>' + results[key]['name'] + '</td>';
+						showData += '<td>' + results[key]['datetime'] + '</td>';
+						showData += '<td> 50 </td>';
+						showData += '<td>' + results[key]['marksObtained'] + '</td>';
+						showData += '<td>' + results[key]['percentage'] + '%</td></tr>';
 						counter++;
 					}
 				}

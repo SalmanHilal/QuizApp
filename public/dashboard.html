@@ -47,6 +47,7 @@
 			$('.userEmail').html(user['email']);
 			$('#userEmail').val(user['email']);
 			showData(user['email'])
+			showResults(user['email'])
 			if (user['displayName'] == 'student') {
 				window.location.replace("quizzes.html");
 			}
@@ -91,65 +92,107 @@
 </div>
 
 <div class="container py-5">
-	<div class="row">
+	<div class="rowmb-5">
 		<div class="col">
 			<h2 class="text-center">Teacher's Dashboard</h2>
 		</div>
 	</div>
-	<div class="row pt-5">
-		<div class="col-sm-12">
-			<p><strong>Note:</strong> Quiz must have five questions to be activated.</p>
-		</div>
-		<div class="col-lg-4 col-md-12 col-sm-12">
-			<div class="card">
-				<h5 class="card-header info-color white-text text-center py-4">
-					<strong>Add Quiz</strong>
-				</h5>
-				<div class="card-body">
-					<form style="color: #757575;" action="#!">
-						<div class="md-form">
-							<label for="text">Quiz Name</label>
-							<input type="text" id="qname" class="form-control" required />
+		<div class="card">
+			<h5 class="card-header info-color white-text text-center pt-4 pb-0 border-bottom-0">
+				<ul class="nav nav-tabs" id="myTab" role="tablist">
+					<li class="nav-item w-50">
+						<a class="nav-link active" id="allQuizzes-tab" data-toggle="tab" href="#allQuizzes" role="tab"
+							aria-controls="allQuizzes" aria-selected="true">Quizzes</a>
+					</li>
+					<li class="nav-item w-50">
+						<a class="nav-link" id="myResults-tab" data-toggle="tab" href="#myResults" role="tab"
+							aria-controls="myResults" aria-selected="false">Results</a>
+					</li>
+				</ul>
+			</h5>
+			<div class="tab-content" id="myTabContent">
+				<div class="tab-pane fade show active" id="allQuizzes" role="tabpanel" aria-labelledby="allQuizzes-tab">
+					<div class="row p-4">
+						<div class="col-sm-12">
+							<p><strong>Note:</strong> Quiz must have five questions to be activated.</p>
 						</div>
-						<input type="hidden" id="userEmail">
-						<button class="btn btn-outline-info btn-rounded my-4" type="button" onClick="addQuiz()">Add</button>
-					</form>
-					<div class="alert alert-warning d-none" role="alert">
+						<div class="col-lg-4 col-md-12 col-sm-12">
+							<div class="card">
+								<h5 class="card-header info-color white-text text-center py-4">
+									<strong>Add Quiz</strong>
+								</h5>
+								<div class="card-body">
+									<form style="color: #757575;" action="#!">
+										<div class="md-form">
+											<label for="text">Quiz Name</label>
+											<input type="text" id="qname" class="form-control" required />
+										</div>
+										<input type="hidden" id="userEmail">
+										<button class="btn btn-outline-info btn-rounded my-4" type="button" onClick="addQuiz()">Add</button>
+									</form>
+									<div class="alert alert-warning d-none" role="alert">
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="col-lg-8 col-md-12 col-sm-12">
+							<div class="card">
+								<h5 class="card-header info-color white-text text-center py-4">
+									<strong>All Quizzes</strong>
+								</h5>
+								<div class="card-body">
+									<table id="quizesTable" class="table table-bordered" style="width:100%">
+										<thead>
+											<tr>
+												<th>SR#</th>
+												<th>Name</th>
+												<th>Actions</th>
+											</tr>
+										</thead>
+										<tbody id="quizes">
+											<tr>
+												<td colspan="3" class="w-100 text-center">
+													<button class="btn btn-default" disabled>
+														<span class="spinner-grow spinner-grow-sm"></span>
+														Loading..
+													</button>
+												</td>
+											</tr>
+										</tbody>
+									</table>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="tab-pane fade" id="myResults" role="tabpanel" aria-labelledby="myResults-tab">
+					<div class="card-body">
+						<table id="resultsTable" class="table table-bordered" style="width:100%">
+							<thead>
+								<tr>
+									<th>SR#</th>
+									<th>Quiz Name</th>
+									<th>Date/Time</th>
+									<th>Total Marks</th>
+									<th>Marks Obtained</th>
+									<th>Percentage</th>
+								</tr>
+							</thead>
+							<tbody id="results">
+								<tr>
+									<td colspan="6" class="w-100 text-center">
+										<button class="btn btn-default" disabled>
+											<span class="spinner-grow spinner-grow-sm"></span>
+											Loading..
+										</button>
+									</td>
+								</tr>
+							</tbody>
+						</table>
 					</div>
 				</div>
 			</div>
 		</div>
-		<div class="col-lg-8 col-md-12 col-sm-12">
-			<div class="card">
-				<h5 class="card-header info-color white-text text-center py-4">
-					<strong>All Quizzes</strong>
-				</h5>
-				<div class="card-body">
-					<table id="quizesTable" class="table table-bordered" style="width:100%">
-						<thead>
-							<tr>
-								<th>SR#</th>
-								<th>Name</th>
-								<th>Actions</th>
-							</tr>
-						</thead>
-						<tbody id="quizes">
-							<tr>
-								<td colspan="3" class="w-100 text-center">
-								<button class="btn btn-default" disabled>
-									<span class="spinner-grow spinner-grow-sm"></span>
-									Loading..
-								</button>
-								</td>
-							</tr>
-						</tbody>
-					</table>
-				</div>
-			</div>
-		</div>
-	</div>
-
-
 </div>
 <div class="modal fade" id="addQuestion" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
 	aria-hidden="true">
@@ -334,7 +377,7 @@ function showData(userEmail) {
 		console.log("Error: " + error.code);
 	});
 }
-function showResutlts(userEmail) {
+function showResults(userEmail) {
 	String.prototype.replaceAll = function (str1, str2, ignore) {
 		return this.replace(new RegExp(str1.replace(/([\/\,\!\\\^\$\{\}\[\]\(\)\.\*\+\?\|\<\>\-\&])/g, "\\$&"), (ignore ? "gi" : "g")), (typeof (str2) == "string") ? str2.replace(/\$/g, "$$$$") : str2);
 	}
@@ -362,6 +405,50 @@ function showResutlts(userEmail) {
 		}
 		$('#quizes').html(showData);
 		$('#quizesTable').DataTable({
+			"aoColumnDefs": [
+				{ "width": "40px", "targets": 0 },
+				{
+					"bSortable": false,
+					"aTargets": [0, -1]
+				}
+			]
+		});
+	}, function (error) {
+		console.log("Error: " + error.code);
+	});
+}
+function showResutlts(userEmail) {
+	String.prototype.replaceAll = function (str1, str2, ignore) {
+		return this.replace(new RegExp(str1.replace(/([\/\,\!\\\^\$\{\}\[\]\(\)\.\*\+\?\|\<\>\-\&])/g, "\\$&"), (ignore ? "gi" : "g")), (typeof (str2) == "string") ? str2.replace(/\$/g, "$$$$") : str2);
+	}
+	uid = userEmail.replaceAll('.', '-');
+	uid = uid.replace('@', '-');
+	var showData = '';
+	var ref = firebase.database().ref();
+	ref.once("value", function (snapshot) {
+		if (snapshot.val() != null) {
+			results = snapshot.val()['Results'];
+			if (results) {
+				counter = 1;
+				for (var key in results) {
+					if (results.hasOwnProperty(key)) {
+						showData += '<tr><td>' + counter + '</td>';
+						showData += '<td>' + results[key]['name'] + '</td>';
+						showData += '<td>' + results[key]['datetime'] + '</td>';
+						showData += '<td> 50 </td>';
+						showData += '<td>' + results[key]['marksObtained'] + '</td>';
+						showData += '<td>' + results[key]['percentage'] + '%</td></tr>';
+						counter++;
+					}
+				}
+			} else {
+				showData = '<tr><td colspan="3" class="text-center">No records found!</td></tr>'
+			}
+		} else {
+			showData = '<tr><td colspan="3" class="text-center">No records found!</td></tr>'
+		}
+		$('#results').html(showData);
+		$('#resultsTable').DataTable({
 			"aoColumnDefs": [
 				{ "width": "40px", "targets": 0 },
 				{
