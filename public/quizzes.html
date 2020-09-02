@@ -245,13 +245,13 @@ function showResutlts(userEmail) {
 				results = results[uid];
 				counter = 1;
 				for (var key in results) {
-					if (results.hasOwnProperty(key)) {
-						showData += '<tr><td>'+ counter +'</td>';
-						showData += '<td>' + results[key]['name'] + '</td>';
-						showData += '<td>' + results[key]['datetime'] + '</td>';
-						showData += '<td> 50 </td>';
-						showData += '<td>' + results[key]['marksObtained'] + '</td>';
-						showData += '<td>' + results[key]['percentage'] + '%</td></tr>';
+					for(var i in results[key]){
+						showData += '<tr><td>' + counter + '</td>';
+						showData += '<td>' + results[key][i]['name'] + '</td>';
+						showData += '<td>' + results[key][i]['datetime'] + '</td>';
+						showData += '<td class="text-center"> 50 </td>';
+						showData += '<td class="text-center">' + results[key][i]['marksObtained'] + '</td>';
+						showData += '<td>' + results[key][i]['percentage'] + '%</td></tr>';
 						counter++;
 					}
 				}

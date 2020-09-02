@@ -178,17 +178,13 @@ $(document).on("click", '.quiz-box .option', function (e) {
 	currentQuesID = $(this).parent().parent().attr('id').replace('q', '');
 	userAnswer = $(this).attr('id');
 	score = answers[currentQuesID-1] == userAnswer? '10':'0';
-	key = firebase.database().ref('Quizzes').push().key;
+	key = firebase.database().ref('Results').push().key;
 	userEmail = $('.userEmail').text().trim();
 	email = userEmail.replaceAll('.', '-');
 	email = email.replace('@', '-');
-	var Result = {
-		userAnswer: userAnswer,
-		correctAnswer: answers[currentQuesID - 1],
-		score: score,
-		key: key
-	}
+
 	results.push(score);
+
 	if (currentQuesID == 1) {
 		var Details = {
 			teacherEmail: teacherEmail,
@@ -196,11 +192,24 @@ $(document).on("click", '.quiz-box .option', function (e) {
 			key: id,
 			datetime: datetime,
 			marksObtained: '',
+			studentID: userEmail,
 			percentage: ''
 		}
-		firebase.database().ref('Results/' + email + '/' + id).set(Details);
+		let ref = firebase.database().ref('Results/' + email + '/' + id);
+		let usersRef = ref.child(now);
+		usersRef.set(Details);
+
 	}
-	firebase.database().ref('Results/' + email + '/' + id +'/' + now + '/' + key).set(Result);
+	var Result = {
+		userAnswer: userAnswer,
+		correctAnswer: answers[currentQuesID - 1],
+		score: score,
+		key: key
+	}
+	let ref = firebase.database().ref('Results/' + email + '/' + id + '/' + now);
+	let usersRef = ref.child(key);
+	usersRef.update(Result);
+
 	if (currentQuesID != 5) {
 			$('.quiz-box').removeClass('current');
 			$(this).parent().parent().next().addClass('current');
@@ -223,7 +232,7 @@ $(document).on("click", '.quiz-box .option', function (e) {
 		resultData += '<tr><td>Percentage</td><td>'+ percentage +'%</td></tr>';
 		resultData += '</table><a href="quizzes.html" class="btn btn-primary d-block mx-auto">Go Back</a></div>';
 		$('#results').html(resultData);
-		firebase.database().ref('Results/' + email + '/' + id).update({marksObtained : obtained, percentage:percentage});
+		firebase.database().ref('Results/' + email + '/' + id +'/'+ now).update({marksObtained : obtained, percentage:percentage});
 	}
 });
 </script>
