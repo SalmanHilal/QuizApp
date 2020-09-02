@@ -169,7 +169,7 @@ $(document).on("click", '.quiz-box .option', function (e) {
 	score = answers[currentQuesID-1] == userAnswer? '10':'0';
 	key = firebase.database().ref('Quizzes').push().key;
 	userEmail = $('.userEmail').text().trim();
-	email = userEmail.replace('.', '-');
+	email = userEmail.replace(/./g, '-');
 	email = email.replace('@', '-');
 	var Result = {
 		userAnswer: userAnswer,

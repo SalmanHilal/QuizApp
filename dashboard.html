@@ -291,7 +291,7 @@ function addQuiz() {
 	}
 }
 function showData(userEmail) {
-	uid = userEmail.replace('.', '-');
+	uid = userEmail.replace(/./g, '-');
 	uid = uid.replace('@', '-');
 	var showData = '';
 	var ref = firebase.database().ref();
@@ -321,7 +321,7 @@ function showData(userEmail) {
 }
 $(document).on("click", '.deleteQuiz', function (event) {
 	userEmail = $('#userEmail').val();
-	usermail = userEmail.replace('.', '-');
+	usermail = userEmail.replace(/./g, '-');
 	usermail = usermail.replace('@', '-');
 	qID = $(this).parent().attr('data-id');
 	swal({
@@ -359,7 +359,7 @@ $(document).on("click", '.addQuestion', function (event) {
 function checkQuestions(qID) {
 	counter = 0;
 	userEmail = $('#userEmail').val();
-	email = userEmail.replace('.', '-');
+	email = userEmail.replace(/./g, '-');
 	email = email.replace('@', '-');
 	qID = qID;
 	var ref = firebase.database().ref();
@@ -386,7 +386,7 @@ function checkQuestions(qID) {
 }
 function addQuestion(){ 
 	userEmail = $('#userEmail').val();
-	email = userEmail.replace('.', '-');
+	email = userEmail.replace(/./g, '-');
 	email = email.replace('@', '-');
 	qID = $('#quiz_id').val();
 	correct = '',answer='', isemptyfield=0;
@@ -439,7 +439,7 @@ function addQuestion(){
 }
 $(document).on("click", '.viewQuestions', function (event) {
 	userEmail = $('#userEmail').val();
-	usrid = userEmail.replace('.', '-');
+	usrid = userEmail.replace(/./g, '-');
 	usrid = usrid.replace('@', '-');
 	quiz_ID = $(this).parent().attr('data-id');
 	var show_Data = '';
