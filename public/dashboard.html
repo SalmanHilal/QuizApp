@@ -97,10 +97,10 @@
 		</div>
 	</div>
 	<div class="row pt-5">
-		<div class="col-sm-12 p-0">
+		<div class="col-sm-12">
 			<p><strong>Note:</strong> Quiz must have five questions to be activated.</p>
 		</div>
-		<div class="col-lg-4 col-md-12 col-sm-12 p-0">
+		<div class="col-lg-4 col-md-12 col-sm-12">
 			<div class="card">
 				<h5 class="card-header info-color white-text text-center py-4">
 					<strong>Add Quiz</strong>
@@ -265,6 +265,9 @@ function hideAlert() {
 	}, 5000);
 }
 function addQuiz() {
+	String.prototype.replaceAll = function (str1, str2, ignore) {
+		return this.replace(new RegExp(str1.replace(/([\/\,\!\\\^\$\{\}\[\]\(\)\.\*\+\?\|\<\>\-\&])/g, "\\$&"), (ignore ? "gi" : "g")), (typeof (str2) == "string") ? str2.replace(/\$/g, "$$$$") : str2);
+	} 
 	qName = $('#qname').val();
 	userEmail = $('#userEmail').val();
 	if (qName.length === 0) {
@@ -277,7 +280,8 @@ function addQuiz() {
 		hideAlert()
 	}else{
 		key = firebase.database().ref('Quizzes').push().key;
-		email = userEmail.replace('.','-');
+		email = userEmail.replaceAll(".","-");
+		console.log(email)
 		email = email.replace('@', '-');
 		var Quiz = {
 			name: qName,
@@ -291,7 +295,10 @@ function addQuiz() {
 	}
 }
 function showData(userEmail) {
-	uid = userEmail.replace(/./g, '-');
+	String.prototype.replaceAll = function (str1, str2, ignore) {
+		return this.replace(new RegExp(str1.replace(/([\/\,\!\\\^\$\{\}\[\]\(\)\.\*\+\?\|\<\>\-\&])/g, "\\$&"), (ignore ? "gi" : "g")), (typeof (str2) == "string") ? str2.replace(/\$/g, "$$$$") : str2);
+	}
+	uid = userEmail.replaceAll('.', '-');
 	uid = uid.replace('@', '-');
 	var showData = '';
 	var ref = firebase.database().ref();
@@ -314,14 +321,65 @@ function showData(userEmail) {
 			showData = '<tr><td colspan="3" class="text-center">No records found!</td></tr>'
 		}
 		$('#quizes').html(showData);
-		$('#quizesTable').DataTable();
+		$('#quizesTable').DataTable({
+			"aoColumnDefs": [
+				{ "width": "40px", "targets": 0 },
+				{
+					"bSortable": false,
+					"aTargets": [0,-1]
+				}
+			]
+		});
+	}, function (error) {
+		console.log("Error: " + error.code);
+	});
+}
+function showResutlts(userEmail) {
+	String.prototype.replaceAll = function (str1, str2, ignore) {
+		return this.replace(new RegExp(str1.replace(/([\/\,\!\\\^\$\{\}\[\]\(\)\.\*\+\?\|\<\>\-\&])/g, "\\$&"), (ignore ? "gi" : "g")), (typeof (str2) == "string") ? str2.replace(/\$/g, "$$$$") : str2);
+	}
+	uid = userEmail.replaceAll('.', '-');
+	uid = uid.replace('@', '-');
+	var showData = '';
+	var ref = firebase.database().ref();
+	ref.once("value", function (snapshot) {
+		if (snapshot.val() != null) {
+			quizzes = snapshot.val()['Quizzes'];
+			if (quizzes) {
+				quizzes = quizzes[uid];
+				counter = 1;
+				for (var key in quizzes) {
+					if (quizzes.hasOwnProperty(key)) {
+						showData += '<tr><td>' + counter + '</td><td class="quiz_name">' + quizzes[key]['name'] + '</td><td data-id="' + key + '"><button type="button" class="btn btn-danger btn-md deleteQuiz"  title="Delete Quiz"><i class="fa fa-trash"></i> </button> <button type="button" class="btn btn-success btn-md viewQuestions mr-1"  title="View Questions" data-toggle="modal" data-target="#viewQuestions"><i class="fa fa-eye"></i> </button><button type="button" class="btn btn-primary btn-md addQuestion"  title="Add Question" data-toggle="modal" data-target="#addQuestion"><i class="fa fa-plus"></i> </button> </td></tr>';
+						counter++;
+					}
+				}
+			} else {
+				showData = '<tr><td colspan="3" class="text-center">No records found!</td></tr>'
+			}
+		} else {
+			showData = '<tr><td colspan="3" class="text-center">No records found!</td></tr>'
+		}
+		$('#quizes').html(showData);
+		$('#quizesTable').DataTable({
+			"aoColumnDefs": [
+				{ "width": "40px", "targets": 0 },
+				{
+					"bSortable": false,
+					"aTargets": [0, -1]
+				}
+			]
+		});
 	}, function (error) {
 		console.log("Error: " + error.code);
 	});
 }
 $(document).on("click", '.deleteQuiz', function (event) {
+	String.prototype.replaceAll = function (str1, str2, ignore) {
+		return this.replace(new RegExp(str1.replace(/([\/\,\!\\\^\$\{\}\[\]\(\)\.\*\+\?\|\<\>\-\&])/g, "\\$&"), (ignore ? "gi" : "g")), (typeof (str2) == "string") ? str2.replace(/\$/g, "$$$$") : str2);
+	} 
 	userEmail = $('#userEmail').val();
-	usermail = userEmail.replace(/./g, '-');
+	usermail = userEmail.replaceAll('.', '-');
 	usermail = usermail.replace('@', '-');
 	qID = $(this).parent().attr('data-id');
 	swal({
@@ -357,9 +415,12 @@ $(document).on("click", '.addQuestion', function (event) {
 	$('#quiz_id').val($(this).parent().attr('data-id'));
 });
 function checkQuestions(qID) {
+	String.prototype.replaceAll = function (str1, str2, ignore) {
+		return this.replace(new RegExp(str1.replace(/([\/\,\!\\\^\$\{\}\[\]\(\)\.\*\+\?\|\<\>\-\&])/g, "\\$&"), (ignore ? "gi" : "g")), (typeof (str2) == "string") ? str2.replace(/\$/g, "$$$$") : str2);
+	} 
 	counter = 0;
 	userEmail = $('#userEmail').val();
-	email = userEmail.replace(/./g, '-');
+	email = userEmail.replaceAll('.', '-');
 	email = email.replace('@', '-');
 	qID = qID;
 	var ref = firebase.database().ref();
@@ -384,9 +445,12 @@ function checkQuestions(qID) {
 		console.log("Error: " + error.code);
 	});
 }
-function addQuestion(){ 
+function addQuestion(){
+	String.prototype.replaceAll = function (str1, str2, ignore) {
+		return this.replace(new RegExp(str1.replace(/([\/\,\!\\\^\$\{\}\[\]\(\)\.\*\+\?\|\<\>\-\&])/g, "\\$&"), (ignore ? "gi" : "g")), (typeof (str2) == "string") ? str2.replace(/\$/g, "$$$$") : str2);
+	} 
 	userEmail = $('#userEmail').val();
-	email = userEmail.replace(/./g, '-');
+	email = userEmail.replaceAll('.', '-');
 	email = email.replace('@', '-');
 	qID = $('#quiz_id').val();
 	correct = '',answer='', isemptyfield=0;
@@ -410,7 +474,6 @@ function addQuestion(){
 		$('.alert1').html('Please mark correct option before submit.');
 		hideAlert()
 	}else{
-		
 		key = firebase.database().ref('Quizzes').push().key;
 		var Question = {
 			question: $('form #question').val(),
@@ -430,16 +493,25 @@ function addQuestion(){
 			});
 			$('#addQuestion').modal('toggle');
 			checkQuestions(qID);
+			$('form #question').val('');
+			$('form #op1').val('');
+			$('form #op3').val('');
+			$('form #op2').val('');
+			$('form #op4').val('');
 		})
 		.catch(function (error) {
 			console.log("Remove failed: " + error.message)
 		});
 	}
-
 }
 $(document).on("click", '.viewQuestions', function (event) {
+	String.prototype.replaceAll = function (str1, str2, ignore) {
+		return this.replace(new RegExp(str1.replace(/([\/\,\!\\\^\$\{\}\[\]\(\)\.\*\+\?\|\<\>\-\&])/g, "\\$&"), (ignore ? "gi" : "g")), (typeof (str2) == "string") ? str2.replace(/\$/g, "$$$$") : str2);
+	}
+	QuizName = $(this).parent().siblings('.quiz_name').text().trim();
+	$('.quizName').html('Questions of '+ QuizName);
 	userEmail = $('#userEmail').val();
-	usrid = userEmail.replace(/./g, '-');
+	usrid = userEmail.replace('.', '-');
 	usrid = usrid.replace('@', '-');
 	quiz_ID = $(this).parent().attr('data-id');
 	var show_Data = '';

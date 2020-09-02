@@ -100,6 +100,9 @@
 
 <div class="container py-5">
 	<div class="row">
+		<div class="col-sm-12 col-md-10 mx-auto">
+			<h2 class="quizName text-center mb-4"></h2>
+		</div>
 		<div class="col-sm-12 col-md-10 mx-auto" id="results">
 		</div>
 		<div class="col-sm-12 col-md-10 mx-auto" id="quizContainer">
@@ -119,6 +122,7 @@
 var answers = [], results = [], resultData = '', QuizName = '';
 var id = new URL(window.location.href).searchParams.get("id");
 now = new Date().toLocaleString().replace(/ /g, "").replace(/,/g, "-").replace(/:/g, "-").replace(/\//g, "-");
+datetime = new Date().toLocaleString();
 $(document).ready(function () {
 	if(id == null){
 		window.location.replace("quizzes.html");
@@ -157,19 +161,23 @@ $(document).ready(function () {
 		} else {
 			show_Data = 'No records found!'
 		}
+		$('.quizName').html(QuizName);
 		$('#quizContainer').html(show_Data);
 	}, function (error) {
 		console.log("Error: " + error.code);
 	});
 });
 $(document).on("click", '.quiz-box .option', function (e) {
+	String.prototype.replaceAll = function (str1, str2, ignore) {
+		return this.replace(new RegExp(str1.replace(/([\/\,\!\\\^\$\{\}\[\]\(\)\.\*\+\?\|\<\>\-\&])/g, "\\$&"), (ignore ? "gi" : "g")), (typeof (str2) == "string") ? str2.replace(/\$/g, "$$$$") : str2);
+	} 
 	$(this).addClass('selected');
 	currentQuesID = $(this).parent().parent().attr('id').replace('q', '');
 	userAnswer = $(this).attr('id');
 	score = answers[currentQuesID-1] == userAnswer? '10':'0';
 	key = firebase.database().ref('Quizzes').push().key;
 	userEmail = $('.userEmail').text().trim();
-	email = userEmail.replace(/./g, '-');
+	email = userEmail.replaceAll('.', '-');
 	email = email.replace('@', '-');
 	var Result = {
 		userAnswer: userAnswer,
@@ -178,8 +186,17 @@ $(document).on("click", '.quiz-box .option', function (e) {
 		key: key
 	}
 	results.push(score);
+	if (currentQuesID == 1) {
+		var Details = {
+			name: QuizName,
+			key: id,
+			datetime: datetime,
+			marksObtained: '',
+			percentage: ''
+		}
+		firebase.database().ref('Results/' + email + '/' + id).set(Details);
+	}
 	firebase.database().ref('Results/' + email + '/' + id +'/' + now + '/' + key).set(Result);
-
 	if (currentQuesID != 5) {
 			$('.quiz-box').removeClass('current');
 			$(this).parent().parent().next().addClass('current');
@@ -202,6 +219,7 @@ $(document).on("click", '.quiz-box .option', function (e) {
 		resultData += '<tr><td>Percentage</td><td>'+ percentage +'%</td></tr>';
 		resultData += '</table><a href="quizzes.html" class="btn btn-primary d-block mx-auto">Go Back</a></div>';
 		$('#results').html(resultData);
+		firebase.database().ref('Results/' + email + '/' + id).update({marksObtained : obtained, percentage:percentage});
 	}
 });
 </script>
