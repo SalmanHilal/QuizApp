@@ -192,9 +192,9 @@ $(document).on("click", '.quiz-box .option', function (e) {
 			name: QuizName,
 			key: id,
 			datetime: datetime,
-			marksObtained: '',
+			marksObtained: 0,
 			studentID: userEmail,
-			percentage: ''
+			percentage: 0
 		}
 		let ref = firebase.database().ref('Results/' + email + '/' + id);
 		let usersRef = ref.child(now);

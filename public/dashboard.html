@@ -145,7 +145,7 @@
 									<table id="quizesTable" class="table table-bordered" style="width:100%">
 										<thead>
 											<tr>
-												<th>SR#</th>
+												<th class="text-center">SR#</th>
 												<th>Name</th>
 												<th>Actions</th>
 											</tr>
@@ -171,7 +171,7 @@
 						<table id="resultsTable" class="table table-bordered" style="width:100%">
 							<thead>
 								<tr>
-									<th>SR#</th>
+									<th class="text-center">SR#</th>
 									<th>Quiz Name</th>
 									<th>Student ID</th>
 									<th>Date/Time</th>
@@ -354,7 +354,7 @@ function showData(userEmail) {
 				counter = 1;
 				for (var key in quizzes) {
 					if (quizzes.hasOwnProperty(key)) {
-						showData += '<tr><td>' + counter + '</td><td class="quiz_name">' + quizzes[key]['name'] + '</td><td data-id="' + key + '"><button type="button" class="btn btn-danger btn-md deleteQuiz"  title="Delete Quiz"><i class="fa fa-trash"></i> </button> <button type="button" class="btn btn-success btn-md viewQuestions mr-1"  title="View Questions" data-toggle="modal" data-target="#viewQuestions"><i class="fa fa-eye"></i> </button><button type="button" class="btn btn-primary btn-md addQuestion"  title="Add Question" data-toggle="modal" data-target="#addQuestion"><i class="fa fa-plus"></i> </button> </td></tr>';
+						showData += '<tr><td class="text-center">' + counter + '</td><td class="quiz_name">' + quizzes[key]['name'] + '</td><td data-id="' + key + '"><button type="button" class="btn btn-danger btn-md deleteQuiz"  title="Delete Quiz"><i class="fa fa-trash"></i> </button> <button type="button" class="btn btn-success btn-md viewQuestions mr-1"  title="View Questions" data-toggle="modal" data-target="#viewQuestions"><i class="fa fa-eye"></i> </button><button type="button" class="btn btn-primary btn-md addQuestion"  title="Add Question" data-toggle="modal" data-target="#addQuestion"><i class="fa fa-plus"></i> </button> </td></tr>';
 						counter++;
 					}
 				}
@@ -398,13 +398,13 @@ function showResults(userEmail) {
 						for(var item in results[key]){
 							for(var i in results[key][item]){
 								if(results[key][item][i]['teacherEmail'] == userEmail){
-									showData += '<tr><td>' + counter + '</td>';
+									showData += '<tr><td class="text-center">' + counter + '</td>';
 									showData += '<td>' + results[key][item][i]['name'] + '</td>';
 									showData += '<td>' + results[key][item][i]['studentID'] + '</td>';
 									showData += '<td>' + results[key][item][i]['datetime'] + '</td>';
 									showData += '<td class="text-center"> 50 </td>';
 									showData += '<td class="text-center">' + results[key][item][i]['marksObtained'] + '</td>';
-									showData += '<td>' + results[key][item][i]['percentage'] + '%</td></tr>';
+									showData += '<td class="text-center">' + results[key][item][i]['percentage'] + '%</td></tr>';
 									counter++;
 								}
 							}

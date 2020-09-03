@@ -106,7 +106,7 @@
 							<table id="quizesTable" class="table table-bordered" style="width:100%">
 								<thead>
 									<tr>
-										<th>SR#</th>
+										<th class="text-center">SR#</th>
 										<th>Quiz Name</th>
 										<th>Actions</th>
 									</tr>
@@ -129,12 +129,12 @@
 							<table id="resultsTable" class="table table-bordered" style="width:100%">
 								<thead>
 									<tr>
-										<th>SR#</th>
+										<th class="text-center">SR#</th>
 										<th>Quiz Name</th>
 										<th>Date/Time</th>
-										<th>Total Marks</th>
-										<th>Marks Obtained</th>
-										<th>Percentage</th>
+										<th class="text-center">Total Marks</th>
+										<th class="text-center">Marks Obtained</th>
+										<th class="text-center">Percentage</th>
 									</tr>
 								</thead>
 								<tbody id="results">
@@ -204,7 +204,7 @@ function showData() {
 					if (quizzes) {
 						for(item in quizzes[key]){
 							if(quizzes[key][item]['status'] == 'active'){
-								showData += '<tr><td>' + counter + '</td><td class="quiz_name">' + quizzes[key][item]['name'] + '</td><td data-id="' + item + '"><button type="button" class="btn btn-primary btn-md viewDetails mr-1"  title="View Details" data-toggle="modal" data-target="#viewDetails"><i class="fa fa-eye"></i> </button><button type="button" class="btn btn-success btn-md startQuiz"  title="Attempt Quiz"><i class="fa fa-sign-in"></i> </button> </td></tr>';
+								showData += '<tr><td class="text-center">' + counter + '</td><td class="quiz_name">' + quizzes[key][item]['name'] + '</td><td data-id="' + item + '"><button type="button" class="btn btn-primary btn-md viewDetails mr-1"  title="View Details" data-toggle="modal" data-target="#viewDetails"><i class="fa fa-eye"></i> </button><button type="button" class="btn btn-success btn-md startQuiz"  title="Attempt Quiz"><i class="fa fa-sign-in"></i> </button> </td></tr>';
 								counter++;
 							}
 						}
@@ -247,12 +247,12 @@ function showResutlts(userEmail) {
 				counter = 1;
 				for (var key in results) {
 					for(var i in results[key]){
-						showData += '<tr><td>' + counter + '</td>';
+						showData += '<tr><td class="text-center">' + counter + '</td>';
 						showData += '<td>' + results[key][i]['name'] + '</td>';
 						showData += '<td>' + results[key][i]['datetime'] + '</td>';
 						showData += '<td class="text-center"> 50 </td>';
 						showData += '<td class="text-center">' + results[key][i]['marksObtained'] + '</td>';
-						showData += '<td>' + results[key][i]['percentage'] + '%</td></tr>';
+						showData += '<td class="text-center">' + results[key][i]['percentage'] + '%</td></tr>';
 						counter++;
 					}
 				}
