@@ -13,6 +13,14 @@
 /* Custom CSS */
 
 /* Responsive CSS */
+@media (max-width: 992px){
+    .responsiveTable {
+        display: block;
+        width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+}
 @media (max-width: 500px){
     tbody td button.btn {
         min-width: 41px;

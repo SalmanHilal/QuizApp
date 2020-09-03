@@ -225,12 +225,12 @@ $(document).on("click", '.quiz-box .option', function (e) {
 		}
 		percentage = (100 * obtained) / 50;
 		resultData += '<div class="card shadow p-4 mb-5 border-0 bg-white rounded"><table class="table">';
-		resultData += '<tr class="first-row"><td>Quiz</td><td>'+ QuizName +'</td></tr>';
-		resultData += '<tr><td>Total Questions</td><td>05</td></tr>';
-		resultData += '<tr><td>Correct Answers</td><td>'+(correctAns==0?'':'0') + correctAns + '</td></tr>';
-		resultData += '<tr><td>Total Marks</td><td>50</td></tr>';
-		resultData += '<tr><td>Marks Obtained</td><td>'+ obtained +'</td></tr>';
-		resultData += '<tr><td>Percentage</td><td>'+ percentage +'%</td></tr>';
+		resultData += '<tr class="first-row"><td>Quiz</td><td class="text-center">'+ QuizName +'</td></tr>';
+		resultData += '<tr><td>Total Questions</td><td class="text-center">05</td></tr>';
+		resultData += '<tr><td>Correct Answers</td><td class="text-center">'+(correctAns==0?'':'0') + correctAns + '</td></tr>';
+		resultData += '<tr><td>Total Marks</td><td class="text-center">50</td></tr>';
+		resultData += '<tr><td>Marks Obtained</td><td class="text-center">'+ obtained +'</td></tr>';
+		resultData += '<tr><td>Percentage</td><td class="text-center">'+ percentage +'%</td></tr>';
 		resultData += '</table><a href="quizzes.html" class="btn btn-primary d-block mx-auto">Go Back</a></div>';
 		$('#results').html(resultData);
 		firebase.database().ref('Results/' + email + '/' + id +'/'+ now).update({marksObtained : obtained, percentage:percentage});
